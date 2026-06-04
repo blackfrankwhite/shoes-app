@@ -27,7 +27,7 @@ class InquiryCreationTest extends TestCase
         $product->sizes()->attach($size);
         $product->colors()->attach($color);
 
-        $response = $this->post(route('inquiries.store', $product), [
+        $response = $this->post(route('inquiries.store', ['locale' => 'ka', 'product' => $product]), [
             'name' => 'Nino Beridze',
             'phone' => '+995 599 12 34 56',
             'email' => 'nino@example.com',
@@ -39,7 +39,7 @@ class InquiryCreationTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('products.show', $product));
+            ->assertRedirect(route('products.show', ['locale' => 'ka', 'product' => $product]));
 
         $this->assertDatabaseHas('inquiries', [
             'product_id' => $product->id,
@@ -65,17 +65,19 @@ class InquiryCreationTest extends TestCase
         $product->sizes()->attach($availableSize);
         $product->colors()->attach($color);
 
-        $response = $this->from(route('inquiries.create', $product))->post(route('inquiries.store', $product), [
-            'name' => 'Nino Beridze',
-            'phone' => '+995 599 12 34 56',
-            'size_id' => $unavailableSize->id,
-            'color_id' => $color->id,
-            'quantity' => 1,
-        ]);
+        $response = $this
+            ->from(route('inquiries.create', ['locale' => 'ka', 'product' => $product]))
+            ->post(route('inquiries.store', ['locale' => 'ka', 'product' => $product]), [
+                'name' => 'Nino Beridze',
+                'phone' => '+995 599 12 34 56',
+                'size_id' => $unavailableSize->id,
+                'color_id' => $color->id,
+                'quantity' => 1,
+            ]);
 
         $response
             ->assertSessionHasErrors('size_id')
-            ->assertRedirect(route('inquiries.create', $product));
+            ->assertRedirect(route('inquiries.create', ['locale' => 'ka', 'product' => $product]));
 
         $this->assertDatabaseCount('inquiries', 0);
     }

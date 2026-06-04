@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Database\Factories\ColorFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Color extends Model
 {
     /** @use HasFactory<ColorFactory> */
-    use HasFactory;
+    use HasFactory, HasTranslations;
 
     protected $fillable = [
         'name',
+        'name_translations',
         'slug',
         'hex_code',
         'is_active',
@@ -23,6 +25,7 @@ class Color extends Model
     {
         return [
             'is_active' => 'boolean',
+            'name_translations' => 'array',
         ];
     }
 

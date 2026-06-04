@@ -19,7 +19,16 @@ class CategoryController extends Controller
             'categories' => Category::query()
                 ->withCount('products')
                 ->orderBy('name')
-                ->paginate(15),
+                ->paginate(15)
+                ->through(fn (Category $category): array => [
+                    'id' => $category->id,
+                    'name' => $category->translated('name'),
+                    'base_name' => $category->name,
+                    'slug' => $category->slug,
+                    'description' => $category->translated('description'),
+                    'products_count' => $category->products_count,
+                    'is_active' => (bool) $category->is_active,
+                ]),
         ]);
     }
 
@@ -38,7 +47,7 @@ class CategoryController extends Controller
 
         Category::create($request->validated());
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category created.');
+        return redirect()->route('admin.categories.index')->with('success', __('app.flash.category_created'));
     }
 
     public function edit(Category $category): Response
@@ -56,7 +65,7 @@ class CategoryController extends Controller
 
         $category->update($request->validated());
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category updated.');
+        return redirect()->route('admin.categories.index')->with('success', __('app.flash.category_updated'));
     }
 
     public function destroy(Category $category): RedirectResponse
@@ -65,6 +74,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted.');
+        return redirect()->route('admin.categories.index')->with('success', __('app.flash.category_deleted'));
     }
 }

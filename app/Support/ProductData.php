@@ -29,7 +29,9 @@ class ProductData
 
         return [
             'id' => $product->id,
-            'name' => $product->name,
+            'name' => $product->translated('name'),
+            'base_name' => $product->name,
+            'name_translations' => $product->name_translations ?? [],
             'slug' => $product->slug,
             'sku' => $product->sku,
             'sex' => $product->sex,
@@ -40,7 +42,8 @@ class ProductData
             'is_active' => (bool) $product->is_active,
             'category' => $product->category ? [
                 'id' => $product->category->id,
-                'name' => $product->category->name,
+                'name' => $product->category->translated('name'),
+                'base_name' => $product->category->name,
                 'slug' => $product->category->slug,
             ] : null,
             'image' => self::imageUrl($mainImage?->path),
@@ -71,7 +74,9 @@ class ProductData
 
         return [
             ...self::card($product),
-            'description' => $product->description,
+            'description' => $product->translated('description'),
+            'base_description' => $product->description,
+            'description_translations' => $product->description_translations ?? [],
             'sizes' => $product->sizes->map(fn ($size): array => [
                 'id' => $size->id,
                 'label' => $size->label,
@@ -79,7 +84,8 @@ class ProductData
             ])->values(),
             'colors' => $product->colors->map(fn ($color): array => [
                 'id' => $color->id,
-                'name' => $color->name,
+                'name' => $color->translated('name'),
+                'base_name' => $color->name,
                 'slug' => $color->slug,
                 'hex_code' => $color->hex_code,
             ])->values(),

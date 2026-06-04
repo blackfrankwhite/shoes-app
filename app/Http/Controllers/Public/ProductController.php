@@ -24,6 +24,8 @@ class ProductController extends Controller
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('name_translations->en', 'like', "%{$search}%")
+                        ->orWhere('name_translations->ru', 'like', "%{$search}%")
                         ->orWhere('sku', 'like', "%{$search}%");
                 });
             })
@@ -45,7 +47,12 @@ class ProductController extends Controller
                 'categories' => Category::query()
                     ->where('is_active', true)
                     ->orderBy('name')
-                    ->get(['id', 'name', 'slug']),
+                    ->get()
+                    ->map(fn (Category $category): array => [
+                        'id' => $category->id,
+                        'name' => $category->translated('name'),
+                        'slug' => $category->slug,
+                    ]),
                 'sizes' => Size::query()
                     ->where('is_active', true)
                     ->orderBy('sort_order')
@@ -54,13 +61,19 @@ class ProductController extends Controller
                 'colors' => Color::query()
                     ->where('is_active', true)
                     ->orderBy('name')
-                    ->get(['id', 'name', 'slug', 'hex_code']),
+                    ->get()
+                    ->map(fn (Color $color): array => [
+                        'id' => $color->id,
+                        'name' => $color->translated('name'),
+                        'slug' => $color->slug,
+                        'hex_code' => $color->hex_code,
+                    ]),
                 'sexes' => Product::SEXES,
             ],
         ]);
     }
 
-    public function show(Product $product): Response
+    public function show(string $locale, Product $product): Response
     {
         abort_unless($product->is_active, 404);
 
@@ -82,10 +95,10 @@ class ProductController extends Controller
             'product' => ProductData::detail($product),
             'relatedProducts' => $relatedProducts,
             'breadcrumbs' => [
-                ['label' => 'Home', 'href' => route('home')],
-                ['label' => 'Products', 'href' => route('products.index')],
-                ['label' => $product->category?->name, 'href' => route('products.index', ['category' => $product->category?->slug])],
-                ['label' => $product->name, 'href' => null],
+                ['label' => __('app.public.show.home'), 'href' => route('home', ['locale' => app()->getLocale()])],
+                ['label' => __('app.common.products'), 'href' => route('products.index', ['locale' => app()->getLocale()])],
+                ['label' => $product->category?->translated('name'), 'href' => route('products.index', ['locale' => app()->getLocale(), 'category' => $product->category?->slug])],
+                ['label' => $product->translated('name'), 'href' => null],
             ],
         ]);
     }

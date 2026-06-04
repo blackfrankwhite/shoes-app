@@ -11,7 +11,7 @@ defineProps({
 
 <template>
     <article class="group">
-        <Link :href="route('products.show', product.slug)" class="block">
+        <Link :href="route('products.show', { locale: $page.props.i18n.locale, product: product.slug })" class="block">
             <div class="aspect-[4/5] overflow-hidden bg-gray-100">
                 <img
                     :src="product.image"
@@ -20,11 +20,11 @@ defineProps({
                     loading="lazy"
                 />
             </div>
-            <div class="mt-4 space-y-1">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                    {{ product.category?.name || product.sex }}
+            <div class="mt-3 space-y-1 sm:mt-4">
+                <p class="break-words text-[11px] uppercase tracking-wide text-gray-500 sm:text-xs">
+                    {{ product.category?.name || $t(`sexes.${product.sex}`) }}
                 </p>
-                <h3 class="text-base font-medium text-gray-950">
+                <h3 class="break-words text-sm font-medium leading-5 text-gray-950 sm:text-base">
                     {{ product.name }}
                 </h3>
                 <p class="text-sm text-gray-700">{{ product.formatted_price }}</p>

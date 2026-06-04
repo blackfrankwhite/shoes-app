@@ -13,13 +13,20 @@ use App\Http\Controllers\Public\ProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', HomeController::class)->name('home');
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/products/{product:slug}/reserve', [InquiryController::class, 'create'])->name('inquiries.create');
-Route::post('/products/{product:slug}/reserve', [InquiryController::class, 'store'])->name('inquiries.store');
-Route::get('/about', fn () => Inertia::render('Public/About'))->name('about');
-Route::get('/admin/login', fn () => redirect()->route('login'))->middleware('guest')->name('admin.login');
+Route::redirect('/', '/ka');
+
+Route::pattern('locale', 'ka|en|ru');
+
+Route::prefix('{locale}')->group(function (): void {
+    Route::get('/', HomeController::class)->name('home');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/products/{product:slug}/reserve', [InquiryController::class, 'create'])->name('inquiries.create');
+    Route::post('/products/{product:slug}/reserve', [InquiryController::class, 'store'])->name('inquiries.store');
+    Route::get('/about', fn () => Inertia::render('Public/About'))->name('about');
+});
+
+Route::redirect('/login', '/admin/login')->middleware('guest');
 
 Route::redirect('/dashboard', '/admin')->middleware(['auth', 'verified', 'can:access-admin'])->name('dashboard');
 

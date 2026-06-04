@@ -16,7 +16,17 @@ class ColorController extends Controller
         $this->authorize('viewAny', Color::class);
 
         return Inertia::render('Admin/Colors/Index', [
-            'colors' => Color::query()->orderBy('name')->paginate(20),
+            'colors' => Color::query()
+                ->orderBy('name')
+                ->paginate(20)
+                ->through(fn (Color $color): array => [
+                    'id' => $color->id,
+                    'name' => $color->translated('name'),
+                    'base_name' => $color->name,
+                    'slug' => $color->slug,
+                    'hex_code' => $color->hex_code,
+                    'is_active' => (bool) $color->is_active,
+                ]),
         ]);
     }
 
@@ -33,7 +43,7 @@ class ColorController extends Controller
 
         Color::create($request->validated());
 
-        return redirect()->route('admin.colors.index')->with('success', 'Color created.');
+        return redirect()->route('admin.colors.index')->with('success', __('app.flash.color_created'));
     }
 
     public function edit(Color $color): Response
@@ -49,7 +59,7 @@ class ColorController extends Controller
 
         $color->update($request->validated());
 
-        return redirect()->route('admin.colors.index')->with('success', 'Color updated.');
+        return redirect()->route('admin.colors.index')->with('success', __('app.flash.color_updated'));
     }
 
     public function destroy(Color $color): RedirectResponse
@@ -58,6 +68,6 @@ class ColorController extends Controller
 
         $color->delete();
 
-        return redirect()->route('admin.colors.index')->with('success', 'Color deleted.');
+        return redirect()->route('admin.colors.index')->with('success', __('app.flash.color_deleted'));
     }
 }

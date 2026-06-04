@@ -28,6 +28,9 @@ class CategoryRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'name_translations' => ['array'],
+            'name_translations.en' => ['nullable', 'string', 'max:255'],
+            'name_translations.ru' => ['nullable', 'string', 'max:255'],
             'slug' => [
                 'required',
                 'alpha_dash',
@@ -35,6 +38,9 @@ class CategoryRequest extends FormRequest
                 Rule::unique(Category::class, 'slug')->ignore($category?->id),
             ],
             'description' => ['nullable', 'string'],
+            'description_translations' => ['array'],
+            'description_translations.en' => ['nullable', 'string'],
+            'description_translations.ru' => ['nullable', 'string'],
             'is_active' => ['boolean'],
         ];
     }

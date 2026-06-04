@@ -28,7 +28,7 @@ class DashboardController extends Controller
                 'name' => $inquiry->name,
                 'phone' => $inquiry->phone,
                 'status' => $inquiry->status,
-                'product' => $inquiry->product?->name,
+                'product' => $inquiry->product?->translated('name'),
                 'created_at' => $inquiry->created_at?->toFormattedDateString(),
             ]);
 

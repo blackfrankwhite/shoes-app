@@ -31,6 +31,9 @@ class ProductRequest extends FormRequest
         return [
             'category_id' => ['required', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],
+            'name_translations' => ['array'],
+            'name_translations.en' => ['nullable', 'string', 'max:255'],
+            'name_translations.ru' => ['nullable', 'string', 'max:255'],
             'slug' => [
                 'required',
                 'alpha_dash',
@@ -40,6 +43,9 @@ class ProductRequest extends FormRequest
             'sex' => ['required', Rule::in(Product::SEXES)],
             'price' => ['required', 'numeric', 'min:0', 'max:999999.99'],
             'description' => ['nullable', 'string'],
+            'description_translations' => ['array'],
+            'description_translations.en' => ['nullable', 'string'],
+            'description_translations.ru' => ['nullable', 'string'],
             'sku' => [
                 'required',
                 'string',

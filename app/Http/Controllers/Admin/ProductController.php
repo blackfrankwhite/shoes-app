@@ -30,6 +30,8 @@ class ProductController extends Controller
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('name_translations->en', 'like', "%{$search}%")
+                        ->orWhere('name_translations->ru', 'like', "%{$search}%")
                         ->orWhere('sku', 'like', "%{$search}%");
                 });
             })
@@ -43,7 +45,14 @@ class ProductController extends Controller
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
             'filters' => $filters,
-            'categories' => Category::query()->orderBy('name')->get(['id', 'name', 'slug']),
+            'categories' => Category::query()
+                ->orderBy('name')
+                ->get()
+                ->map(fn (Category $category): array => [
+                    'id' => $category->id,
+                    'name' => $category->translated('name'),
+                    'slug' => $category->slug,
+                ]),
         ]);
     }
 
@@ -68,7 +77,7 @@ class ProductController extends Controller
         $product->colors()->sync($validated['colors'] ?? []);
         $this->syncImages($product, $request, $validated);
 
-        return redirect()->route('admin.products.show', $product)->with('success', 'Product created.');
+        return redirect()->route('admin.products.show', $product)->with('success', __('app.flash.product_created'));
     }
 
     public function show(Product $product): Response
@@ -104,7 +113,7 @@ class ProductController extends Controller
         $product->colors()->sync($validated['colors'] ?? []);
         $this->syncImages($product, $request, $validated);
 
-        return redirect()->route('admin.products.show', $product)->with('success', 'Product updated.');
+        return redirect()->route('admin.products.show', $product)->with('success', __('app.flash.product_updated'));
     }
 
     public function destroy(Product $product): RedirectResponse
@@ -114,15 +123,28 @@ class ProductController extends Controller
         $product->images->each(fn (ProductImage $image) => $this->deleteImageFile($image->path));
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product deleted.');
+        return redirect()->route('admin.products.index')->with('success', __('app.flash.product_deleted'));
     }
 
     private function options(): array
     {
         return [
-            'categories' => Category::query()->orderBy('name')->get(['id', 'name']),
+            'categories' => Category::query()
+                ->orderBy('name')
+                ->get()
+                ->map(fn (Category $category): array => [
+                    'id' => $category->id,
+                    'name' => $category->translated('name'),
+                ]),
             'sizes' => Size::query()->orderBy('sort_order')->orderBy('value')->get(['id', 'label', 'value']),
-            'colors' => Color::query()->orderBy('name')->get(['id', 'name', 'hex_code']),
+            'colors' => Color::query()
+                ->orderBy('name')
+                ->get()
+                ->map(fn (Color $color): array => [
+                    'id' => $color->id,
+                    'name' => $color->translated('name'),
+                    'hex_code' => $color->hex_code,
+                ]),
             'sexes' => Product::SEXES,
         ];
     }
@@ -132,10 +154,12 @@ class ProductController extends Controller
         return collect($validated)->only([
             'category_id',
             'name',
+            'name_translations',
             'slug',
             'sex',
             'price',
             'description',
+            'description_translations',
             'sku',
             'stock_quantity',
             'featured',

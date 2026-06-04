@@ -28,6 +28,9 @@ class ColorRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'name_translations' => ['array'],
+            'name_translations.en' => ['nullable', 'string', 'max:255'],
+            'name_translations.ru' => ['nullable', 'string', 'max:255'],
             'slug' => [
                 'required',
                 'alpha_dash',

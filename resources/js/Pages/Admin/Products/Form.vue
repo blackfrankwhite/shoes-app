@@ -21,11 +21,19 @@ const mainImage = (props.product?.images || []).find((image) => image.is_main) |
 
 const form = useForm({
     category_id: props.product?.category?.id || props.options.categories[0]?.id || '',
-    name: props.product?.name || '',
+    name: props.product?.base_name || props.product?.name || '',
+    name_translations: {
+        en: props.product?.name_translations?.en || '',
+        ru: props.product?.name_translations?.ru || '',
+    },
     slug: props.product?.slug || '',
     sex: props.product?.sex || props.options.sexes[0],
     price: props.product?.price || '',
-    description: props.product?.description || '',
+    description: props.product?.base_description || props.product?.description || '',
+    description_translations: {
+        en: props.product?.description_translations?.en || '',
+        ru: props.product?.description_translations?.ru || '',
+    },
     sku: props.product?.sku || '',
     stock_quantity: props.product?.stock_quantity ?? 0,
     featured: props.product?.featured || false,
@@ -60,81 +68,107 @@ const setFiles = (event) => {
 </script>
 
 <template>
-    <Head :title="isEdit ? `Edit ${product.name}` : 'Create Product'" />
+    <Head :title="isEdit ? `${$t('common.edit')} ${product.name}` : $t('admin.products.create')" />
 
     <AdminLayout>
         <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <p class="text-xs uppercase tracking-[0.18em] text-gray-500">Catalog</p>
-                <h1 class="mt-2 text-3xl font-semibold">{{ isEdit ? 'Edit product' : 'Create product' }}</h1>
+                <p class="text-xs uppercase tracking-[0.18em] text-gray-500">{{ $t('admin.catalog') }}</p>
+                <h1 class="mt-2 text-2xl font-semibold sm:text-3xl">{{ isEdit ? $t('admin.products.edit') : $t('admin.products.create') }}</h1>
             </div>
-            <Link :href="route('admin.products.index')" class="text-sm text-gray-600 hover:text-black">Back to products</Link>
+            <Link :href="route('admin.products.index')" class="text-sm text-gray-600 hover:text-black">{{ $t('common.back_to_products') }}</Link>
         </div>
 
-        <form class="mt-8 space-y-8" @submit.prevent="submit">
-            <section class="grid gap-5 border border-gray-200 bg-white p-5 lg:grid-cols-2">
+        <form class="mt-6 space-y-6 sm:mt-8 sm:space-y-8" @submit.prevent="submit">
+            <section class="grid gap-5 border border-gray-200 bg-white p-4 sm:p-5 lg:grid-cols-2">
                 <div>
-                    <label class="text-sm font-medium">Name</label>
+                    <label class="text-sm font-medium">{{ $t('common.name') }}</label>
                     <input v-model="form.name" type="text" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                     <p v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</p>
                 </div>
                 <div>
-                    <label class="text-sm font-medium">Slug</label>
-                    <input v-model="form.slug" type="text" placeholder="Auto-generated if blank" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                    <label class="text-sm font-medium">{{ $t('common.slug') }}</label>
+                    <input v-model="form.slug" type="text" :placeholder="$t('admin.products.auto_slug')" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                     <p v-if="form.errors.slug" class="mt-1 text-sm text-red-600">{{ form.errors.slug }}</p>
                 </div>
                 <div>
-                    <label class="text-sm font-medium">SKU / factory code</label>
+                    <label class="text-sm font-medium">{{ $t('common.sku') }}</label>
                     <input v-model="form.sku" type="text" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                     <p v-if="form.errors.sku" class="mt-1 text-sm text-red-600">{{ form.errors.sku }}</p>
                 </div>
                 <div>
-                    <label class="text-sm font-medium">Category</label>
+                    <label class="text-sm font-medium">{{ $t('common.category') }}</label>
                     <select v-model="form.category_id" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black">
                         <option v-for="category in options.categories" :key="category.id" :value="category.id">{{ category.name }}</option>
                     </select>
                     <p v-if="form.errors.category_id" class="mt-1 text-sm text-red-600">{{ form.errors.category_id }}</p>
                 </div>
                 <div>
-                    <label class="text-sm font-medium">Sex</label>
+                    <label class="text-sm font-medium">{{ $t('common.sex') }}</label>
                     <select v-model="form.sex" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black">
-                        <option v-for="sex in options.sexes" :key="sex" :value="sex">{{ sex }}</option>
+                        <option v-for="sex in options.sexes" :key="sex" :value="sex">{{ $t(`sexes.${sex}`) }}</option>
                     </select>
                     <p v-if="form.errors.sex" class="mt-1 text-sm text-red-600">{{ form.errors.sex }}</p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="text-sm font-medium">Price</label>
+                        <label class="text-sm font-medium">{{ $t('common.price') }}</label>
                         <input v-model="form.price" type="number" min="0" step="0.01" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                         <p v-if="form.errors.price" class="mt-1 text-sm text-red-600">{{ form.errors.price }}</p>
                     </div>
                     <div>
-                        <label class="text-sm font-medium">Stock</label>
+                        <label class="text-sm font-medium">{{ $t('common.stock') }}</label>
                         <input v-model="form.stock_quantity" type="number" min="0" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                         <p v-if="form.errors.stock_quantity" class="mt-1 text-sm text-red-600">{{ form.errors.stock_quantity }}</p>
                     </div>
                 </div>
                 <div class="lg:col-span-2">
-                    <label class="text-sm font-medium">Description</label>
+                    <label class="text-sm font-medium">{{ $t('common.description') }}</label>
                     <textarea v-model="form.description" rows="5" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                     <p v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</p>
                 </div>
                 <div class="flex gap-6">
                     <label class="flex items-center gap-2 text-sm">
                         <input v-model="form.featured" type="checkbox" class="border-gray-300 text-black focus:ring-black" />
-                        Featured
+                        {{ $t('common.featured') }}
                     </label>
                     <label class="flex items-center gap-2 text-sm">
                         <input v-model="form.is_active" type="checkbox" class="border-gray-300 text-black focus:ring-black" />
-                        Active
+                        {{ $t('common.active') }}
                     </label>
                 </div>
             </section>
 
-            <section class="grid gap-6 border border-gray-200 bg-white p-5 lg:grid-cols-2">
+            <section class="grid gap-5 border border-gray-200 bg-white p-4 sm:p-5 lg:grid-cols-2">
+                <div class="lg:col-span-2">
+                    <h2 class="text-lg font-semibold">{{ $t('common.translations') }}</h2>
+                </div>
                 <div>
-                    <h2 class="text-lg font-semibold">Sizes</h2>
-                    <div class="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5">
+                    <label class="text-sm font-medium">{{ $t('common.name') }} · {{ $t('locales.en') }}</label>
+                    <input v-model="form.name_translations.en" type="text" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                    <p v-if="form.errors['name_translations.en']" class="mt-1 text-sm text-red-600">{{ form.errors['name_translations.en'] }}</p>
+                </div>
+                <div>
+                    <label class="text-sm font-medium">{{ $t('common.name') }} · {{ $t('locales.ru') }}</label>
+                    <input v-model="form.name_translations.ru" type="text" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                    <p v-if="form.errors['name_translations.ru']" class="mt-1 text-sm text-red-600">{{ form.errors['name_translations.ru'] }}</p>
+                </div>
+                <div>
+                    <label class="text-sm font-medium">{{ $t('common.description') }} · {{ $t('locales.en') }}</label>
+                    <textarea v-model="form.description_translations.en" rows="4" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                    <p v-if="form.errors['description_translations.en']" class="mt-1 text-sm text-red-600">{{ form.errors['description_translations.en'] }}</p>
+                </div>
+                <div>
+                    <label class="text-sm font-medium">{{ $t('common.description') }} · {{ $t('locales.ru') }}</label>
+                    <textarea v-model="form.description_translations.ru" rows="4" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                    <p v-if="form.errors['description_translations.ru']" class="mt-1 text-sm text-red-600">{{ form.errors['description_translations.ru'] }}</p>
+                </div>
+            </section>
+
+            <section class="grid gap-6 border border-gray-200 bg-white p-4 sm:p-5 lg:grid-cols-2">
+                <div>
+                    <h2 class="text-lg font-semibold">{{ $t('common.sizes') }}</h2>
+                    <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
                         <label v-for="size in options.sizes" :key="size.id" class="flex items-center gap-2 border border-gray-200 px-3 py-2 text-sm">
                             <input v-model="form.sizes" :value="size.id" type="checkbox" class="border-gray-300 text-black focus:ring-black" />
                             {{ size.label }}
@@ -142,7 +176,7 @@ const setFiles = (event) => {
                     </div>
                 </div>
                 <div>
-                    <h2 class="text-lg font-semibold">Colors</h2>
+                    <h2 class="text-lg font-semibold">{{ $t('common.colors') }}</h2>
                     <div class="mt-4 grid gap-2 sm:grid-cols-2">
                         <label v-for="color in options.colors" :key="color.id" class="flex items-center gap-2 border border-gray-200 px-3 py-2 text-sm">
                             <input v-model="form.colors" :value="color.id" type="checkbox" class="border-gray-300 text-black focus:ring-black" />
@@ -153,9 +187,9 @@ const setFiles = (event) => {
                 </div>
             </section>
 
-            <section class="border border-gray-200 bg-white p-5">
-                <h2 class="text-lg font-semibold">Images</h2>
-                <p class="mt-1 text-sm text-gray-600">Upload product images. Existing images can be reordered and one image can be marked as main.</p>
+            <section class="border border-gray-200 bg-white p-4 sm:p-5">
+                <h2 class="text-lg font-semibold">{{ $t('common.images') }}</h2>
+                <p class="mt-1 text-sm text-gray-600">{{ $t('admin.products.upload_help') }}</p>
 
                 <input type="file" multiple accept="image/*" class="mt-5 block w-full text-sm" @change="setFiles" />
                 <p v-if="form.errors.images" class="mt-1 text-sm text-red-600">{{ form.errors.images }}</p>
@@ -165,28 +199,28 @@ const setFiles = (event) => {
                         <img :src="image.url" :alt="image.alt_text || product.name" class="aspect-[4/5] w-full bg-gray-100 object-cover" />
                         <div class="mt-3 space-y-3 text-sm">
                             <label class="block">
-                                <span class="text-gray-600">Order</span>
+                                <span class="text-gray-600">{{ $t('common.order') }}</span>
                                 <input v-model="form.image_order[image.id]" type="number" min="0" class="mt-1 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                             </label>
                             <label class="flex items-center gap-2">
                                 <input v-model="form.main_image_id" :value="image.id" type="radio" class="border-gray-300 text-black focus:ring-black" />
-                                Main image
+                                {{ $t('common.main_image') }}
                             </label>
                             <label class="flex items-center gap-2 text-red-700">
                                 <input v-model="form.delete_images" :value="image.id" type="checkbox" class="border-gray-300 text-red-700 focus:ring-red-700" />
-                                Delete
+                                {{ $t('common.delete') }}
                             </label>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <div class="flex gap-3">
+            <div class="grid gap-3 sm:flex">
                 <button type="submit" :disabled="form.processing" class="border border-black bg-black px-6 py-3 text-sm font-medium text-white disabled:opacity-50">
-                    {{ isEdit ? 'Save changes' : 'Create product' }}
+                    {{ isEdit ? $t('admin.products.save_changes') : $t('admin.products.save_create') }}
                 </button>
-                <Link :href="route('admin.products.index')" class="border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-800">
-                    Cancel
+                <Link :href="route('admin.products.index')" class="border border-gray-300 bg-white px-6 py-3 text-center text-sm font-medium text-gray-800">
+                    {{ $t('common.cancel') }}
                 </Link>
             </div>
         </form>

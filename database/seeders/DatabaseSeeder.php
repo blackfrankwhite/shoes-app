@@ -11,7 +11,6 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -43,16 +42,54 @@ class DatabaseSeeder extends Seeder
         );
 
         $categories = collect([
-            ['name' => 'Sneakers', 'description' => 'Everyday factory-made sneakers for Tbilisi streets.'],
-            ['name' => 'Boots', 'description' => 'Durable leather boots for colder seasons.'],
-            ['name' => 'Loafers', 'description' => 'Clean silhouettes for office and formal wear.'],
-            ['name' => 'Kids Shoes', 'description' => 'Comfortable small sizes with flexible soles.'],
+            [
+                'slug' => 'sneakers',
+                'name' => 'კედები',
+                'name_translations' => ['en' => 'Sneakers', 'ru' => 'Кроссовки'],
+                'description' => 'ყოველდღიური ფაბრიკული კედები თბილისის ქუჩებისთვის.',
+                'description_translations' => [
+                    'en' => 'Everyday factory-made sneakers for Tbilisi streets.',
+                    'ru' => 'Повседневные фабричные кроссовки для улиц Тбилиси.',
+                ],
+            ],
+            [
+                'slug' => 'boots',
+                'name' => 'ჩექმები',
+                'name_translations' => ['en' => 'Boots', 'ru' => 'Ботинки'],
+                'description' => 'გამძლე ტყავის ჩექმები ცივი სეზონისთვის.',
+                'description_translations' => [
+                    'en' => 'Durable leather boots for colder seasons.',
+                    'ru' => 'Прочные кожаные ботинки для холодного сезона.',
+                ],
+            ],
+            [
+                'slug' => 'loafers',
+                'name' => 'ლოფერები',
+                'name_translations' => ['en' => 'Loafers', 'ru' => 'Лоферы'],
+                'description' => 'მინიმალისტური მოდელები ოფისისა და ოფიციალური სტილისთვის.',
+                'description_translations' => [
+                    'en' => 'Clean silhouettes for office and formal wear.',
+                    'ru' => 'Лаконичные модели для офиса и формального стиля.',
+                ],
+            ],
+            [
+                'slug' => 'kids-shoes',
+                'name' => 'ბავშვის ფეხსაცმელი',
+                'name_translations' => ['en' => 'Kids Shoes', 'ru' => 'Детская обувь'],
+                'description' => 'კომფორტული პატარა ზომები მოქნილი ძირით.',
+                'description_translations' => [
+                    'en' => 'Comfortable small sizes with flexible soles.',
+                    'ru' => 'Удобные маленькие размеры с гибкой подошвой.',
+                ],
+            ],
         ])->mapWithKeys(function (array $data): array {
             $category = Category::query()->updateOrCreate(
-                ['slug' => Str::slug($data['name'])],
+                ['slug' => $data['slug']],
                 [
                     'name' => $data['name'],
+                    'name_translations' => $data['name_translations'],
                     'description' => $data['description'],
+                    'description_translations' => $data['description_translations'],
                     'is_active' => true,
                 ],
             );
@@ -74,18 +111,19 @@ class DatabaseSeeder extends Seeder
         });
 
         $colors = collect([
-            ['Black', '#111111'],
-            ['White', '#F5F5F5'],
-            ['Graphite', '#5B5F64'],
-            ['Tan', '#B9855B'],
-            ['Burgundy', '#6F1D2D'],
-            ['Olive', '#6B7447'],
+            ['black', 'შავი', '#111111', ['en' => 'Black', 'ru' => 'Черный']],
+            ['white', 'თეთრი', '#F5F5F5', ['en' => 'White', 'ru' => 'Белый']],
+            ['graphite', 'გრაფიტი', '#5B5F64', ['en' => 'Graphite', 'ru' => 'Графитовый']],
+            ['tan', 'ღია ყავისფერი', '#B9855B', ['en' => 'Tan', 'ru' => 'Рыжевато-коричневый']],
+            ['burgundy', 'ბორდო', '#6F1D2D', ['en' => 'Burgundy', 'ru' => 'Бордовый']],
+            ['olive', 'ზეთისხილისფერი', '#6B7447', ['en' => 'Olive', 'ru' => 'Оливковый']],
         ])->mapWithKeys(function (array $data): array {
-            [$name, $hex] = $data;
+            [$slug, $name, $hex, $translations] = $data;
             $color = Color::query()->updateOrCreate(
-                ['slug' => Str::slug($name)],
+                ['slug' => $slug],
                 [
                     'name' => $name,
+                    'name_translations' => $translations,
                     'hex_code' => $hex,
                     'is_active' => true,
                 ],
@@ -94,10 +132,17 @@ class DatabaseSeeder extends Seeder
             return [$color->slug => $color];
         });
 
+        $descriptionTranslations = [
+            'en' => 'Made in Tbilisi with a practical last, replaceable laces, and materials selected for daily local wear. Reserve online and pay at the factory after inspection.',
+            'ru' => 'Сделано в Тбилиси с практичной колодкой, сменными шнурками и материалами для ежедневной носки. Бронируйте онлайн и оплачивайте на фабрике после осмотра.',
+        ];
+
         $products = [
             [
                 'category' => 'sneakers',
-                'name' => 'Saburtalo Low Runner',
+                'name' => 'საბურთალოს დაბალი რანერი',
+                'name_translations' => ['en' => 'Saburtalo Low Runner', 'ru' => 'Низкие раннеры Сабуртало'],
+                'slug' => 'saburtalo-low-runner',
                 'sex' => 'unisex',
                 'price' => 185,
                 'sku' => 'TSF-SBR-001',
@@ -109,7 +154,9 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category' => 'boots',
-                'name' => 'Mtatsminda Work Boot',
+                'name' => 'მთაწმინდის სამუშაო ჩექმა',
+                'name_translations' => ['en' => 'Mtatsminda Work Boot', 'ru' => 'Рабочие ботинки Мтацминда'],
+                'slug' => 'mtatsminda-work-boot',
                 'sex' => 'men',
                 'price' => 260,
                 'sku' => 'TSF-MTB-014',
@@ -121,7 +168,9 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category' => 'loafers',
-                'name' => 'Sololaki Leather Loafer',
+                'name' => 'სოლოლაკის ტყავის ლოფერი',
+                'name_translations' => ['en' => 'Sololaki Leather Loafer', 'ru' => 'Кожаные лоферы Сололаки'],
+                'slug' => 'sololaki-leather-loafer',
                 'sex' => 'women',
                 'price' => 220,
                 'sku' => 'TSF-SLL-024',
@@ -133,7 +182,9 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category' => 'kids-shoes',
-                'name' => 'Vake Mini Trainer',
+                'name' => 'ვაკის საბავშვო ტრენერი',
+                'name_translations' => ['en' => 'Vake Mini Trainer', 'ru' => 'Детские тренеры Ваке'],
+                'slug' => 'vake-mini-trainer',
                 'sex' => 'kids',
                 'price' => 115,
                 'sku' => 'TSF-VMT-030',
@@ -145,7 +196,9 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category' => 'sneakers',
-                'name' => 'Rustaveli Court Sneaker',
+                'name' => 'რუსთაველის კორტის კედი',
+                'name_translations' => ['en' => 'Rustaveli Court Sneaker', 'ru' => 'Кортовые кроссовки Руставели'],
+                'slug' => 'rustaveli-court-sneaker',
                 'sex' => 'men',
                 'price' => 195,
                 'sku' => 'TSF-RCS-041',
@@ -157,7 +210,9 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category' => 'boots',
-                'name' => 'Didube Chelsea Boot',
+                'name' => 'დიდუბის ჩელსი ჩექმა',
+                'name_translations' => ['en' => 'Didube Chelsea Boot', 'ru' => 'Челси ботинки Дидубе'],
+                'slug' => 'didube-chelsea-boot',
                 'sex' => 'women',
                 'price' => 248,
                 'sku' => 'TSF-DCB-051',
@@ -169,16 +224,18 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        $createdProducts = collect($products)->map(function (array $data) use ($categories, $colors, $sizes): Product {
+        $createdProducts = collect($products)->map(function (array $data) use ($categories, $colors, $descriptionTranslations, $sizes): Product {
             $product = Product::query()->updateOrCreate(
                 ['sku' => $data['sku']],
                 [
                     'category_id' => $categories[$data['category']]->id,
                     'name' => $data['name'],
-                    'slug' => Str::slug($data['name']),
+                    'name_translations' => $data['name_translations'],
+                    'slug' => $data['slug'],
                     'sex' => $data['sex'],
                     'price' => $data['price'],
-                    'description' => 'Made in Tbilisi with a practical last, replaceable laces, and materials selected for daily local wear. Reserve online and pay at the factory after inspection.',
+                    'description' => 'დამზადებულია თბილისში პრაქტიკული კალაპოტით, შესაცვლელი თასმებით და ყოველდღიური ადგილობრივი გამოყენებისთვის შერჩეული მასალებით. დაჯავშნეთ ონლაინ და გადაიხადეთ ფაბრიკაში დათვალიერების შემდეგ.',
+                    'description_translations' => $descriptionTranslations,
                     'stock_quantity' => $data['stock'],
                     'featured' => $data['featured'],
                     'is_active' => true,

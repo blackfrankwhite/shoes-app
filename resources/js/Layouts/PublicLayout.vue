@@ -1,30 +1,27 @@
 <script setup>
+import LanguageSwitcher from '@/Components/Localization/LanguageSwitcher.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const page = usePage();
 const flashSuccess = computed(() => page.props.flash?.success);
+const locale = computed(() => page.props.i18n?.locale || 'ka');
 </script>
 
 <template>
     <div class="min-h-screen bg-white text-gray-950">
-        <header class="border-b border-gray-200">
-            <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
-                <Link :href="route('home')" class="text-sm font-semibold uppercase tracking-[0.18em] text-black">
-                    Tbilisi Shoe Factory
+        <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
+            <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+                <Link :href="route('home', { locale })" class="max-w-full break-words text-sm font-semibold uppercase tracking-[0.14em] text-black sm:tracking-[0.18em]">
+                    {{ $t('app_name') }}
                 </Link>
 
-                <nav class="flex items-center gap-5 text-sm text-gray-700">
-                    <Link :href="route('products.index')" class="hover:text-black">Products</Link>
-                    <Link :href="route('about')" class="hover:text-black">About</Link>
-                    <Link
-                        v-if="$page.props.auth?.can_admin"
-                        :href="route('admin.dashboard')"
-                        class="hover:text-black"
-                    >
-                        Admin
-                    </Link>
-                    <Link v-else :href="route('login')" class="hover:text-black">Admin login</Link>
+                <nav class="flex items-center justify-between gap-3 overflow-x-auto text-sm text-gray-700 lg:justify-end">
+                    <div class="flex shrink-0 items-center gap-4">
+                        <Link :href="route('products.index', { locale })" class="py-2 hover:text-black">{{ $t('nav.products') }}</Link>
+                        <Link :href="route('about', { locale })" class="py-2 hover:text-black">{{ $t('nav.about') }}</Link>
+                    </div>
+                    <LanguageSwitcher compact />
                 </nav>
             </div>
         </header>
@@ -42,16 +39,16 @@ const flashSuccess = computed(() => page.props.flash?.success);
         <footer class="mt-20 border-t border-gray-200">
             <div class="mx-auto grid max-w-7xl gap-6 px-4 py-10 text-sm text-gray-600 sm:grid-cols-3 sm:px-6 lg:px-8">
                 <div>
-                    <p class="font-medium text-gray-950">Tbilisi Shoe Factory</p>
-                    <p class="mt-2">Factory showroom and reservations in Tbilisi, Georgia.</p>
+                    <p class="font-medium text-gray-950">{{ $t('app_name') }}</p>
+                    <p class="mt-2">{{ $t('footer.location') }}</p>
                 </div>
                 <div>
-                    <p class="font-medium text-gray-950">No online checkout</p>
-                    <p class="mt-2">Reserve online, inspect and pay physically on-site.</p>
+                    <p class="font-medium text-gray-950">{{ $t('footer.no_checkout_title') }}</p>
+                    <p class="mt-2">{{ $t('footer.no_checkout_text') }}</p>
                 </div>
                 <div>
-                    <p class="font-medium text-gray-950">Contact placeholder</p>
-                    <p class="mt-2">Tbilisi, Georgia · +995 599 00 00 00</p>
+                    <p class="font-medium text-gray-950">{{ $t('footer.contact_title') }}</p>
+                    <p class="mt-2">{{ $t('footer.contact_text') }}</p>
                 </div>
             </div>
         </footer>

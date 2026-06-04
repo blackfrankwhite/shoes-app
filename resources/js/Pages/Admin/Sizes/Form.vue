@@ -29,39 +29,39 @@ const submit = () => {
 </script>
 
 <template>
-    <Head :title="isEdit ? 'Edit Size' : 'Create Size'" />
+    <Head :title="isEdit ? $t('admin.sizes.edit') : $t('admin.sizes.create')" />
 
     <AdminLayout>
-        <div class="flex items-end justify-between gap-4">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <p class="text-xs uppercase tracking-[0.18em] text-gray-500">Attributes</p>
-                <h1 class="mt-2 text-3xl font-semibold">{{ isEdit ? 'Edit size' : 'Create size' }}</h1>
+                <p class="text-xs uppercase tracking-[0.18em] text-gray-500">{{ $t('admin.attributes') }}</p>
+                <h1 class="mt-2 text-2xl font-semibold sm:text-3xl">{{ isEdit ? $t('admin.sizes.edit') : $t('admin.sizes.create') }}</h1>
             </div>
-            <Link :href="route('admin.sizes.index')" class="text-sm text-gray-600 hover:text-black">Back</Link>
+            <Link :href="route('admin.sizes.index')" class="text-sm text-gray-600 hover:text-black">{{ $t('common.back') }}</Link>
         </div>
 
-        <form class="mt-8 max-w-xl space-y-5 border border-gray-200 bg-white p-5" @submit.prevent="submit">
+        <form class="mt-6 max-w-xl space-y-5 border border-gray-200 bg-white p-4 sm:mt-8 sm:p-5" @submit.prevent="submit">
             <div>
-                <label class="text-sm font-medium">Label</label>
-                <input v-model="form.label" type="text" placeholder="EU 42" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                <label class="text-sm font-medium">{{ $t('common.name') }}</label>
+                <input v-model="form.label" type="text" :placeholder="$t('admin.sizes.label_placeholder')" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                 <p v-if="form.errors.label" class="mt-1 text-sm text-red-600">{{ form.errors.label }}</p>
             </div>
             <div>
-                <label class="text-sm font-medium">Value</label>
-                <input v-model="form.value" type="text" placeholder="42" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                <label class="text-sm font-medium">{{ $t('common.value') }}</label>
+                <input v-model="form.value" type="text" :placeholder="$t('admin.sizes.value_placeholder')" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                 <p v-if="form.errors.value" class="mt-1 text-sm text-red-600">{{ form.errors.value }}</p>
             </div>
             <div>
-                <label class="text-sm font-medium">Sort order</label>
+                <label class="text-sm font-medium">{{ $t('admin.sizes.sort_order') }}</label>
                 <input v-model="form.sort_order" type="number" min="0" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                 <p v-if="form.errors.sort_order" class="mt-1 text-sm text-red-600">{{ form.errors.sort_order }}</p>
             </div>
             <label class="flex items-center gap-2 text-sm">
                 <input v-model="form.is_active" type="checkbox" class="border-gray-300 text-black focus:ring-black" />
-                Active
+                {{ $t('common.active') }}
             </label>
-            <button type="submit" class="border border-black bg-black px-6 py-3 text-sm font-medium text-white">
-                Save size
+            <button type="submit" class="w-full border border-black bg-black px-6 py-3 text-sm font-medium text-white sm:w-auto">
+                {{ $t('admin.sizes.save') }}
             </button>
         </form>
     </AdminLayout>

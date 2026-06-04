@@ -12,7 +12,7 @@ use Inertia\Response;
 
 class InquiryController extends Controller
 {
-    public function create(Product $product): Response
+    public function create(string $locale, Product $product): Response
     {
         abort_unless($product->is_active, 404);
 
@@ -23,7 +23,7 @@ class InquiryController extends Controller
         ]);
     }
 
-    public function store(InquiryRequest $request, Product $product): RedirectResponse
+    public function store(InquiryRequest $request, string $locale, Product $product): RedirectResponse
     {
         $product->inquiries()->create([
             ...$request->validated(),
@@ -31,7 +31,7 @@ class InquiryController extends Controller
         ]);
 
         return redirect()
-            ->route('products.show', $product)
-            ->with('success', 'Reservation request received. The factory team will contact you soon.');
+            ->route('products.show', ['locale' => app()->getLocale(), 'product' => $product])
+            ->with('success', __('app.flash.reservation_received'));
     }
 }

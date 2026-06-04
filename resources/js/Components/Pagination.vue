@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-    <nav v-if="links.length > 3" class="flex flex-wrap items-center gap-2">
+    <nav v-if="links.length > 3" class="flex items-center gap-2 overflow-x-auto pb-1">
         <component
             :is="link.url ? Link : 'span'"
             v-for="link in links"
@@ -18,7 +18,7 @@ defineProps({
             :href="link.url || undefined"
             preserve-scroll
             :class="[
-                'min-w-10 border px-3 py-2 text-center text-sm',
+                'min-w-11 shrink-0 border px-3 py-2.5 text-center text-sm',
                 link.active
                     ? 'border-black bg-black text-white'
                     : link.url

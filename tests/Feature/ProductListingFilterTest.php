@@ -58,6 +58,7 @@ class ProductListingFilterTest extends TestCase
         ]);
 
         $response = $this->get(route('products.index', [
+            'locale' => 'ka',
             'search' => 'MATCH',
             'category' => 'sneakers',
             'sex' => 'men',

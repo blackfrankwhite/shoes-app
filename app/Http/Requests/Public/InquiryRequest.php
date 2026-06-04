@@ -33,21 +33,21 @@ class InquiryRequest extends FormRequest
                 $product = $this->route('product');
 
                 if (! $product instanceof Product || ! $product->is_active) {
-                    $validator->errors()->add('product', 'The selected product is not available.');
+                    $validator->errors()->add('product', __('app.validation.product_unavailable'));
 
                     return;
                 }
 
                 if (! $product->sizes()->whereKey($this->integer('size_id'))->exists()) {
-                    $validator->errors()->add('size_id', 'The selected size is not available for this product.');
+                    $validator->errors()->add('size_id', __('app.validation.size_unavailable'));
                 }
 
                 if (! $product->colors()->whereKey($this->integer('color_id'))->exists()) {
-                    $validator->errors()->add('color_id', 'The selected color is not available for this product.');
+                    $validator->errors()->add('color_id', __('app.validation.color_unavailable'));
                 }
 
                 if ($product->stock_quantity > 0 && $this->integer('quantity') > $product->stock_quantity) {
-                    $validator->errors()->add('quantity', 'Requested quantity is higher than current stock.');
+                    $validator->errors()->add('quantity', __('app.validation.quantity_over_stock'));
                 }
             },
         ];

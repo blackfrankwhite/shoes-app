@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    input:not([type='checkbox']):not([type='radio']):not([type='color']),
+    select {
+        min-height: 2.75rem;
+    }
+
+    textarea {
+        min-height: 7rem;
+    }
+}

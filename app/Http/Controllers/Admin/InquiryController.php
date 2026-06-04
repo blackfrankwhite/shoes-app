@@ -69,7 +69,7 @@ class InquiryController extends Controller
 
         $inquiry->update($validated);
 
-        return back()->with('success', 'Inquiry status updated.');
+        return back()->with('success', __('app.flash.inquiry_status_updated'));
     }
 
     private function inquiryData(Inquiry $inquiry): array

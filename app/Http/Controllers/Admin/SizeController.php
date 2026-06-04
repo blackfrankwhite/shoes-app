@@ -33,7 +33,7 @@ class SizeController extends Controller
 
         Size::create($request->validated());
 
-        return redirect()->route('admin.sizes.index')->with('success', 'Size created.');
+        return redirect()->route('admin.sizes.index')->with('success', __('app.flash.size_created'));
     }
 
     public function edit(Size $size): Response
@@ -49,7 +49,7 @@ class SizeController extends Controller
 
         $size->update($request->validated());
 
-        return redirect()->route('admin.sizes.index')->with('success', 'Size updated.');
+        return redirect()->route('admin.sizes.index')->with('success', __('app.flash.size_updated'));
     }
 
     public function destroy(Size $size): RedirectResponse
@@ -58,6 +58,6 @@ class SizeController extends Controller
 
         $size->delete();
 
-        return redirect()->route('admin.sizes.index')->with('success', 'Size deleted.');
+        return redirect()->route('admin.sizes.index')->with('success', __('app.flash.size_deleted'));
     }
 }

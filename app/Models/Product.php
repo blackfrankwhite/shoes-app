@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTranslations;
 use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,17 +14,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     /** @use HasFactory<ProductFactory> */
-    use HasFactory;
+    use HasFactory, HasTranslations;
 
     public const SEXES = ['men', 'women', 'kids', 'unisex'];
 
     protected $fillable = [
         'category_id',
         'name',
+        'name_translations',
         'slug',
         'sex',
         'price',
         'description',
+        'description_translations',
         'sku',
         'stock_quantity',
         'featured',
@@ -37,6 +40,8 @@ class Product extends Model
             'stock_quantity' => 'integer',
             'featured' => 'boolean',
             'is_active' => 'boolean',
+            'name_translations' => 'array',
+            'description_translations' => 'array',
         ];
     }
 

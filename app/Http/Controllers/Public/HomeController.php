@@ -29,9 +29,9 @@ class HomeController extends Controller
             ->get()
             ->map(fn (Category $category): array => [
                 'id' => $category->id,
-                'name' => $category->name,
+                'name' => $category->translated('name'),
                 'slug' => $category->slug,
-                'description' => $category->description,
+                'description' => $category->translated('description'),
                 'products_count' => $category->products_count,
             ]);
 

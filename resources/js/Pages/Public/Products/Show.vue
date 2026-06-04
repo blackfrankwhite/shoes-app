@@ -1,7 +1,7 @@
 <script setup>
 import ProductCard from '@/Components/Public/ProductCard.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 
 const props = defineProps({
@@ -19,8 +19,11 @@ const props = defineProps({
     },
 });
 
+const page = usePage();
 const selectedSize = ref(props.product.sizes[0]?.id || null);
 const selectedColor = ref(props.product.colors[0]?.id || null);
+const primaryImage = computed(() => props.product.images[0]);
+const secondaryImages = computed(() => props.product.images.slice(1));
 
 const reserveUrl = computed(() => {
     const params = new URLSearchParams();
@@ -29,7 +32,7 @@ const reserveUrl = computed(() => {
 
     const query = params.toString();
 
-    return `${route('inquiries.create', props.product.slug)}${query ? `?${query}` : ''}`;
+    return `${route('inquiries.create', { locale: page.props.i18n?.locale || 'ka', product: props.product.slug })}${query ? `?${query}` : ''}`;
 });
 </script>
 
@@ -37,8 +40,8 @@ const reserveUrl = computed(() => {
     <Head :title="product.name" />
 
     <PublicLayout>
-        <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <nav class="flex flex-wrap gap-2 text-xs text-gray-500">
+        <section class="mx-auto max-w-7xl px-4 pb-28 pt-5 sm:px-6 sm:py-8 lg:px-8">
+            <nav class="flex gap-2 overflow-x-auto whitespace-nowrap text-xs text-gray-500">
                 <template v-for="(crumb, index) in breadcrumbs" :key="`${crumb.label}-${index}`">
                     <Link v-if="crumb.href" :href="crumb.href" class="hover:text-black">{{ crumb.label }}</Link>
                     <span v-else class="text-gray-900">{{ crumb.label }}</span>
@@ -46,8 +49,24 @@ const reserveUrl = computed(() => {
                 </template>
             </nav>
 
-            <div class="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_420px]">
-                <div class="grid gap-4 sm:grid-cols-2">
+            <div class="mt-5 grid gap-7 sm:mt-8 lg:grid-cols-[minmax(0,1.1fr)_420px] lg:gap-10">
+                <div class="lg:hidden">
+                    <div class="aspect-[4/5] overflow-hidden bg-gray-100">
+                        <img :src="primaryImage.url" :alt="primaryImage.alt_text || product.name" class="h-full w-full object-cover" />
+                    </div>
+
+                    <div v-if="secondaryImages.length" class="mt-3 flex gap-3 overflow-x-auto pb-1">
+                        <div
+                            v-for="image in secondaryImages"
+                            :key="image.id"
+                            class="h-24 w-20 shrink-0 overflow-hidden bg-gray-100"
+                        >
+                            <img :src="image.url" :alt="image.alt_text || product.name" class="h-full w-full object-cover" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hidden gap-4 lg:grid lg:grid-cols-2">
                     <div
                         v-for="image in product.images"
                         :key="image.id"
@@ -57,22 +76,22 @@ const reserveUrl = computed(() => {
                     </div>
                 </div>
 
-                <aside class="self-start lg:sticky lg:top-6">
-                    <p class="text-xs uppercase tracking-[0.18em] text-gray-500">{{ product.category?.name }} · {{ product.sex }}</p>
-                    <h1 class="mt-3 text-3xl font-semibold">{{ product.name }}</h1>
+                <aside class="self-start lg:sticky lg:top-24">
+                    <p class="text-xs uppercase tracking-[0.18em] text-gray-500">{{ product.category?.name }} · {{ $t(`sexes.${product.sex}`) }}</p>
+                    <h1 class="mt-3 break-words text-2xl font-semibold sm:text-3xl">{{ product.name }}</h1>
                     <p class="mt-3 text-lg text-gray-900">{{ product.formatted_price }}</p>
-                    <p class="mt-2 text-sm text-gray-500">Factory code {{ product.sku }}</p>
+                    <p class="mt-2 text-sm text-gray-500">{{ $t('public.show.factory_code', { sku: product.sku }) }}</p>
 
                     <div class="mt-8 border-t border-gray-200 pt-6">
-                        <p class="text-sm font-medium">Select size</p>
-                        <div class="mt-3 grid grid-cols-4 gap-2">
+                        <p class="text-sm font-medium">{{ $t('public.show.select_size') }}</p>
+                        <div class="mt-3 grid grid-cols-5 gap-2 sm:grid-cols-4">
                             <button
                                 v-for="size in product.sizes"
                                 :key="size.id"
                                 type="button"
                                 @click="selectedSize = size.id"
                                 :class="[
-                                    'border px-3 py-3 text-sm',
+                                    'min-h-11 border px-3 py-3 text-sm',
                                     selectedSize === size.id ? 'border-black bg-black text-white' : 'border-gray-300 bg-white text-gray-900',
                                 ]"
                             >
@@ -82,7 +101,7 @@ const reserveUrl = computed(() => {
                     </div>
 
                     <div class="mt-6">
-                        <p class="text-sm font-medium">Select color</p>
+                        <p class="text-sm font-medium">{{ $t('public.show.select_color') }}</p>
                         <div class="mt-3 flex flex-wrap gap-2">
                             <button
                                 v-for="color in product.colors"
@@ -90,7 +109,7 @@ const reserveUrl = computed(() => {
                                 type="button"
                                 @click="selectedColor = color.id"
                                 :class="[
-                                    'flex items-center gap-2 border px-3 py-2 text-sm',
+                                    'min-h-11 flex items-center gap-2 border px-3 py-2 text-sm',
                                     selectedColor === color.id ? 'border-black' : 'border-gray-300',
                                 ]"
                             >
@@ -102,31 +121,31 @@ const reserveUrl = computed(() => {
 
                     <Link
                         :href="reserveUrl"
-                        class="mt-8 flex w-full items-center justify-center border border-black bg-black px-5 py-4 text-sm font-medium text-white"
+                        class="mt-8 hidden w-full items-center justify-center border border-black bg-black px-5 py-4 text-sm font-medium text-white lg:flex"
                     >
-                        Reserve / Contact Factory
+                        {{ $t('public.show.reserve') }}
                     </Link>
                     <p class="mt-3 text-xs leading-5 text-gray-500">
-                        No online payment. The factory confirms availability by phone before your visit.
+                        {{ $t('public.show.no_payment') }}
                     </p>
 
                     <div class="mt-8 space-y-6 border-t border-gray-200 pt-6 text-sm leading-6">
                         <div>
-                            <h2 class="font-medium">Details</h2>
+                            <h2 class="font-medium">{{ $t('common.details') }}</h2>
                             <p class="mt-2 text-gray-700">{{ product.description }}</p>
                         </div>
                         <div>
-                            <h2 class="font-medium">Highlights</h2>
+                            <h2 class="font-medium">{{ $t('public.show.highlights') }}</h2>
                             <ul class="mt-2 list-inside list-disc text-gray-700">
-                                <li>Factory-made in Tbilisi</li>
-                                <li>Reserve online and pay on-site</li>
-                                <li>{{ product.stock_quantity }} pairs currently listed in stock</li>
+                                <li>{{ $t('public.show.highlight_factory') }}</li>
+                                <li>{{ $t('public.show.highlight_payment') }}</li>
+                                <li>{{ $t('public.show.highlight_stock', { count: product.stock_quantity }) }}</li>
                             </ul>
                         </div>
                         <div>
-                            <h2 class="font-medium">Composition</h2>
+                            <h2 class="font-medium">{{ $t('public.show.composition') }}</h2>
                             <p class="mt-2 text-gray-700">
-                                Upper: locally sourced leather or textile by colorway. Sole: molded rubber. Lining: breathable textile.
+                                {{ $t('public.show.composition_text') }}
                             </p>
                         </div>
                     </div>
@@ -134,9 +153,15 @@ const reserveUrl = computed(() => {
             </div>
         </section>
 
+        <div class="fixed inset-x-0 bottom-0 z-40 border-t border-gray-200 bg-white p-3 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] lg:hidden">
+            <Link :href="reserveUrl" class="flex min-h-12 items-center justify-center border border-black bg-black px-5 py-3 text-sm font-medium text-white">
+                {{ $t('public.show.reserve') }}
+            </Link>
+        </div>
+
         <section v-if="relatedProducts.length" class="mx-auto max-w-7xl border-t border-gray-200 px-4 py-12 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-semibold">Related products</h2>
-            <div class="mt-6 grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            <h2 class="text-2xl font-semibold">{{ $t('public.show.related') }}</h2>
+            <div class="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-4">
                 <ProductCard v-for="related in relatedProducts" :key="related.id" :product="related" />
             </div>
         </section>
