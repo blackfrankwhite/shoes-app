@@ -84,7 +84,7 @@ class ProductController extends Controller
     {
         $this->authorize('view', $product);
 
-        $product->load(['category', 'sizes', 'colors', 'images']);
+        $product->load(['category', 'sizes', 'colors', 'images.color']);
 
         return Inertia::render('Admin/Products/Show', [
             'product' => ProductData::detail($product),
@@ -95,7 +95,7 @@ class ProductController extends Controller
     {
         $this->authorize('update', $product);
 
-        $product->load(['category', 'sizes', 'colors', 'images']);
+        $product->load(['category', 'sizes', 'colors', 'images.color']);
 
         return Inertia::render('Admin/Products/Form', [
             'product' => ProductData::detail($product),
@@ -169,6 +169,9 @@ class ProductController extends Controller
 
     private function syncImages(Product $product, ProductRequest $request, array $validated): void
     {
+        $validColorIds = $product->colors()->pluck('colors.id')->map(fn (int $id): int => $id)->all();
+        $normalizeColorId = fn (mixed $colorId): ?int => in_array((int) $colorId, $validColorIds, true) ? (int) $colorId : null;
+
         foreach ($validated['delete_images'] ?? [] as $imageId) {
             $image = $product->images()->whereKey($imageId)->first();
 
@@ -182,9 +185,14 @@ class ProductController extends Controller
             $product->images()->whereKey($imageId)->update(['sort_order' => (int) $sortOrder]);
         }
 
+        foreach ($validated['image_color_ids'] ?? [] as $imageId => $colorId) {
+            $product->images()->whereKey($imageId)->update(['color_id' => $normalizeColorId($colorId)]);
+        }
+
         $nextSortOrder = ((int) $product->images()->max('sort_order')) + 1;
-        foreach ($request->file('images', []) as $file) {
+        foreach ($request->file('images', []) as $index => $file) {
             $product->images()->create([
+                'color_id' => $normalizeColorId($validated['new_image_color_ids'][$index] ?? null),
                 'path' => $file->store('products'),
                 'alt_text' => $product->name,
                 'sort_order' => $nextSortOrder++,

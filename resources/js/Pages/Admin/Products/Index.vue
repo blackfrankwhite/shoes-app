@@ -77,7 +77,7 @@ const destroyProduct = (product) => {
                     <img :src="product.image" :alt="product.name" class="h-24 w-20 shrink-0 bg-gray-100 object-cover" />
                     <div class="min-w-0 flex-1">
                         <p class="break-words font-medium">{{ product.name }}</p>
-                        <p class="mt-1 text-xs text-gray-500">{{ product.sku }}</p>
+                        <p v-if="product.sku" class="mt-1 text-xs text-gray-500">{{ product.sku }}</p>
                         <p class="mt-2 text-sm text-gray-700">{{ product.formatted_price }}</p>
                         <p class="mt-1 text-xs text-gray-500">{{ product.category?.name }} · {{ product.stock_quantity }} {{ $t('common.stock') }}</p>
                     </div>
@@ -114,7 +114,7 @@ const destroyProduct = (product) => {
                                 <img :src="product.image" :alt="product.name" class="h-16 w-14 bg-gray-100 object-cover" />
                                 <div>
                                     <p class="font-medium">{{ product.name }}</p>
-                                    <p class="mt-1 text-xs text-gray-500">{{ product.sku }}</p>
+                                    <p v-if="product.sku" class="mt-1 text-xs text-gray-500">{{ product.sku }}</p>
                                 </div>
                             </div>
                         </td>

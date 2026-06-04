@@ -27,11 +27,17 @@ defineProps({
 
         <div class="mt-6 grid gap-6 sm:mt-8 lg:grid-cols-[1fr_360px] lg:gap-8">
             <div class="grid grid-cols-2 gap-3 sm:gap-4">
-                <img v-for="image in product.images" :key="image.id" :src="image.url" :alt="image.alt_text || product.name" class="aspect-[4/5] w-full bg-gray-100 object-cover" />
+                <div v-for="image in product.images" :key="image.id" class="relative">
+                    <img :src="image.url" :alt="image.alt_text || product.name" class="aspect-[4/5] w-full bg-gray-100 object-cover" />
+                    <span v-if="image.color" class="absolute left-2 top-2 inline-flex items-center gap-1 bg-white px-2 py-1 text-xs text-gray-800">
+                        <span class="h-3 w-3 border border-gray-300" :style="{ backgroundColor: image.color.hex_code || '#ddd' }" />
+                        {{ image.color.name }}
+                    </span>
+                </div>
             </div>
             <aside class="border border-gray-200 bg-white p-5">
                 <dl class="space-y-4 text-sm">
-                    <div>
+                    <div v-if="product.sku">
                         <dt class="font-medium">{{ $t('common.sku') }}</dt>
                         <dd class="mt-1 text-gray-600">{{ product.sku }}</dd>
                     </div>

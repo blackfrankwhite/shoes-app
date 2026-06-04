@@ -17,6 +17,7 @@ const props = defineProps({
 const isEdit = computed(() => Boolean(props.product));
 
 const imageOrder = Object.fromEntries((props.product?.images || []).map((image) => [image.id, image.sort_order]));
+const imageColorIds = Object.fromEntries((props.product?.images || []).map((image) => [image.id, image.color_id || '']));
 const mainImage = (props.product?.images || []).find((image) => image.is_main) || props.product?.images?.[0];
 
 const form = useForm({
@@ -43,7 +44,16 @@ const form = useForm({
     images: [],
     delete_images: [],
     image_order: imageOrder,
+    image_color_ids: imageColorIds,
+    new_image_color_ids: [],
     main_image_id: mainImage?.id || '',
+});
+
+const selectedColorOptions = computed(() => {
+    const selectedIds = form.colors.map((id) => Number(id));
+    const colors = props.options.colors.filter((color) => selectedIds.includes(Number(color.id)));
+
+    return colors.length ? colors : props.options.colors;
 });
 
 const submit = () => {
@@ -64,6 +74,7 @@ const submit = () => {
 
 const setFiles = (event) => {
     form.images = Array.from(event.target.files || []);
+    form.new_image_color_ids = form.images.map(() => '');
 };
 </script>
 
@@ -92,7 +103,7 @@ const setFiles = (event) => {
                     <p v-if="form.errors.slug" class="mt-1 text-sm text-red-600">{{ form.errors.slug }}</p>
                 </div>
                 <div>
-                    <label class="text-sm font-medium">{{ $t('common.sku') }}</label>
+                    <label class="text-sm font-medium">{{ $t('common.sku') }} · {{ $t('common.optional') }}</label>
                     <input v-model="form.sku" type="text" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                     <p v-if="form.errors.sku" class="mt-1 text-sm text-red-600">{{ form.errors.sku }}</p>
                 </div>
@@ -194,10 +205,34 @@ const setFiles = (event) => {
                 <input type="file" multiple accept="image/*" class="mt-5 block w-full text-sm" @change="setFiles" />
                 <p v-if="form.errors.images" class="mt-1 text-sm text-red-600">{{ form.errors.images }}</p>
 
+                <div v-if="form.images.length" class="mt-5 space-y-3">
+                    <div v-for="(file, index) in form.images" :key="`${file.name}-${index}`" class="grid gap-3 border border-gray-200 p-3 text-sm sm:grid-cols-[1fr_220px] sm:items-center">
+                        <p class="break-all font-medium">{{ file.name }}</p>
+                        <label class="block">
+                            <span class="text-gray-600">{{ $t('common.color') }}</span>
+                            <select v-model="form.new_image_color_ids[index]" class="mt-1 w-full border-gray-300 text-sm focus:border-black focus:ring-black">
+                                <option value="">{{ $t('admin.products.general_image') }}</option>
+                                <option v-for="color in selectedColorOptions" :key="color.id" :value="color.id">
+                                    {{ color.name }}
+                                </option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
                 <div v-if="product?.images?.length" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div v-for="image in product.images" :key="image.id" class="border border-gray-200 p-3">
                         <img :src="image.url" :alt="image.alt_text || product.name" class="aspect-[4/5] w-full bg-gray-100 object-cover" />
                         <div class="mt-3 space-y-3 text-sm">
+                            <label class="block">
+                                <span class="text-gray-600">{{ $t('common.color') }}</span>
+                                <select v-model="form.image_color_ids[image.id]" class="mt-1 w-full border-gray-300 text-sm focus:border-black focus:ring-black">
+                                    <option value="">{{ $t('admin.products.general_image') }}</option>
+                                    <option v-for="color in selectedColorOptions" :key="color.id" :value="color.id">
+                                        {{ color.name }}
+                                    </option>
+                                </select>
+                            </label>
                             <label class="block">
                                 <span class="text-gray-600">{{ $t('common.order') }}</span>
                                 <input v-model="form.image_order[image.id]" type="number" min="0" class="mt-1 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />

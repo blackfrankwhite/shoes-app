@@ -24,6 +24,12 @@ const form = useForm({
     comment: '',
 });
 
+const selectedImage = computed(() => {
+    const image = props.product.images.find((image) => Number(image.color_id) === Number(form.color_id));
+
+    return image?.url || props.product.image;
+});
+
 const submit = () => {
     form.post(route('inquiries.store', { locale: locale.value, product: props.product.slug }));
 };
@@ -41,11 +47,13 @@ const submit = () => {
             <div class="mt-6 grid gap-8 lg:mt-8 lg:grid-cols-[320px_1fr] lg:gap-10">
                 <aside class="flex gap-4 lg:block">
                     <div class="h-28 w-24 shrink-0 overflow-hidden bg-gray-100 lg:h-auto lg:w-auto lg:aspect-[4/5]">
-                        <img :src="product.image" :alt="product.name" class="h-full w-full object-cover" />
+                        <img :src="selectedImage" :alt="product.name" class="h-full w-full object-cover" />
                     </div>
                     <div>
                         <h1 class="break-words text-xl font-semibold lg:mt-4 lg:text-2xl">{{ product.name }}</h1>
-                        <p class="mt-2 text-sm text-gray-600">{{ product.formatted_price }} · {{ product.sku }}</p>
+                        <p class="mt-2 text-sm text-gray-600">
+                            {{ product.formatted_price }}<span v-if="product.sku"> · {{ product.sku }}</span>
+                        </p>
                     </div>
                 </aside>
 

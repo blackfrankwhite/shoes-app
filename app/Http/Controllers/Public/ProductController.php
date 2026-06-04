@@ -77,7 +77,7 @@ class ProductController extends Controller
     {
         abort_unless($product->is_active, 404);
 
-        $product->load(['category', 'sizes', 'colors', 'images']);
+        $product->load(['category', 'sizes', 'colors', 'images.color']);
 
         $relatedProducts = Product::query()
             ->active()

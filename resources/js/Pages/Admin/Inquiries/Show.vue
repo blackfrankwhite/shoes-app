@@ -70,7 +70,7 @@ const updateStatus = () => {
                         <img :src="inquiry.product.image" :alt="inquiry.product.name" class="h-32 w-28 bg-gray-100 object-cover" />
                         <div class="min-w-0 text-sm">
                             <p class="break-words font-medium">{{ inquiry.product.name }}</p>
-                            <p class="mt-1 text-gray-600">{{ inquiry.product.sku }}</p>
+                            <p v-if="inquiry.product.sku" class="mt-1 text-gray-600">{{ inquiry.product.sku }}</p>
                             <p class="mt-3 text-gray-600">{{ $t('common.size') }} {{ inquiry.size }} · {{ inquiry.color }} · {{ $t('common.quantity') }} {{ inquiry.quantity }}</p>
                             <Link :href="route('admin.products.show', inquiry.product.slug)" class="mt-4 inline-flex text-gray-700 hover:text-black">
                                 {{ $t('admin.products.open_product') }}

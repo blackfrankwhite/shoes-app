@@ -47,7 +47,7 @@ class ProductRequest extends FormRequest
             'description_translations.en' => ['nullable', 'string'],
             'description_translations.ru' => ['nullable', 'string'],
             'sku' => [
-                'required',
+                'nullable',
                 'string',
                 'max:255',
                 Rule::unique(Product::class, 'sku')->ignore($product?->id),
@@ -65,6 +65,10 @@ class ProductRequest extends FormRequest
             'delete_images.*' => ['integer', 'exists:product_images,id'],
             'image_order' => ['array'],
             'image_order.*' => ['integer', 'min:0', 'max:1000'],
+            'image_color_ids' => ['array'],
+            'image_color_ids.*' => ['nullable', 'integer', 'exists:colors,id'],
+            'new_image_color_ids' => ['array'],
+            'new_image_color_ids.*' => ['nullable', 'integer', 'exists:colors,id'],
             'main_image_id' => ['nullable', 'integer', 'exists:product_images,id'],
         ];
     }

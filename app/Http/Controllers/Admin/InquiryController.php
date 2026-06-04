@@ -45,7 +45,7 @@ class InquiryController extends Controller
     {
         $this->authorize('view', $inquiry);
 
-        $inquiry->load(['product.category', 'product.images', 'product.sizes', 'product.colors', 'size', 'color']);
+        $inquiry->load(['product.category', 'product.images.color', 'product.sizes', 'product.colors', 'size', 'color']);
 
         return Inertia::render('Admin/Inquiries/Show', [
             'inquiry' => [

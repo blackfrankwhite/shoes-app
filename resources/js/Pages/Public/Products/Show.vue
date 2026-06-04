@@ -22,8 +22,16 @@ const props = defineProps({
 const page = usePage();
 const selectedSize = ref(props.product.sizes[0]?.id || null);
 const selectedColor = ref(props.product.colors[0]?.id || null);
-const primaryImage = computed(() => props.product.images[0]);
-const secondaryImages = computed(() => props.product.images.slice(1));
+
+const visibleImages = computed(() => {
+    const colorImages = selectedColor.value
+        ? props.product.images.filter((image) => Number(image.color_id) === Number(selectedColor.value))
+        : [];
+
+    return colorImages.length ? colorImages : props.product.images;
+});
+const primaryImage = computed(() => visibleImages.value[0] || props.product.images[0]);
+const secondaryImages = computed(() => visibleImages.value.slice(1));
 
 const reserveUrl = computed(() => {
     const params = new URLSearchParams();
@@ -68,7 +76,7 @@ const reserveUrl = computed(() => {
 
                 <div class="hidden gap-4 lg:grid lg:grid-cols-2">
                     <div
-                        v-for="image in product.images"
+                        v-for="image in visibleImages"
                         :key="image.id"
                         class="aspect-[4/5] overflow-hidden bg-gray-100"
                     >
@@ -80,7 +88,7 @@ const reserveUrl = computed(() => {
                     <p class="text-xs uppercase tracking-[0.18em] text-gray-500">{{ product.category?.name }} · {{ $t(`sexes.${product.sex}`) }}</p>
                     <h1 class="mt-3 break-words text-2xl font-semibold sm:text-3xl">{{ product.name }}</h1>
                     <p class="mt-3 text-lg text-gray-900">{{ product.formatted_price }}</p>
-                    <p class="mt-2 text-sm text-gray-500">{{ $t('public.show.factory_code', { sku: product.sku }) }}</p>
+                    <p v-if="product.sku" class="mt-2 text-sm text-gray-500">{{ $t('public.show.factory_code', { sku: product.sku }) }}</p>
 
                     <div class="mt-8 border-t border-gray-200 pt-6">
                         <p class="text-sm font-medium">{{ $t('public.show.select_size') }}</p>

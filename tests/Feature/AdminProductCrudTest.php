@@ -24,6 +24,7 @@ class AdminProductCrudTest extends TestCase
         $category = Category::factory()->create();
         $size = Size::factory()->create(['label' => 'EU 42', 'value' => '42']);
         $color = Color::factory()->create(['name' => 'Black', 'slug' => 'black']);
+        $secondColor = Color::factory()->create(['name' => 'Tan', 'slug' => 'tan']);
 
         $this->actingAs($admin)
             ->post(route('admin.products.store'), [
@@ -33,26 +34,31 @@ class AdminProductCrudTest extends TestCase
                 'sex' => 'unisex',
                 'price' => 199.50,
                 'description' => 'Created from admin CRUD test.',
-                'sku' => 'CRUD-001',
                 'stock_quantity' => 9,
                 'featured' => true,
                 'is_active' => true,
                 'sizes' => [$size->id],
-                'colors' => [$color->id],
+                'colors' => [$color->id, $secondColor->id],
                 'images' => [UploadedFile::fake()->image('shoe.png', 900, 1100)],
+                'new_image_color_ids' => [$color->id],
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect();
 
-        $product = Product::query()->where('sku', 'CRUD-001')->firstOrFail();
+        $product = Product::query()->where('slug', 'admin-created-shoe')->firstOrFail();
 
         $this->assertDatabaseHas('products', [
             'id' => $product->id,
             'name' => 'Admin Created Shoe',
             'slug' => 'admin-created-shoe',
+            'sku' => null,
         ]);
-        $this->assertDatabaseCount('product_images', 1);
+        $this->assertDatabaseHas('product_images', [
+            'product_id' => $product->id,
+            'color_id' => $color->id,
+        ]);
 
+        $image = $product->images()->firstOrFail();
         $this->actingAs($admin)
             ->put(route('admin.products.update', $product), [
                 'category_id' => $category->id,
@@ -61,13 +67,13 @@ class AdminProductCrudTest extends TestCase
                 'sex' => 'women',
                 'price' => 219.00,
                 'description' => 'Updated from admin CRUD test.',
-                'sku' => 'CRUD-001',
                 'stock_quantity' => 5,
                 'featured' => false,
                 'is_active' => true,
                 'sizes' => [$size->id],
-                'colors' => [$color->id],
-                'main_image_id' => $product->images()->first()->id,
+                'colors' => [$color->id, $secondColor->id],
+                'image_color_ids' => [$image->id => $secondColor->id],
+                'main_image_id' => $image->id,
             ])
             ->assertSessionHasNoErrors()
             ->assertRedirect();
@@ -76,6 +82,11 @@ class AdminProductCrudTest extends TestCase
         $this->assertSame('Admin Updated Shoe', $product->name);
         $this->assertSame('women', $product->sex);
         $this->assertSame(5, $product->stock_quantity);
+        $this->assertNull($product->sku);
+        $this->assertDatabaseHas('product_images', [
+            'id' => $image->id,
+            'color_id' => $secondColor->id,
+        ]);
 
         $this->actingAs($admin)
             ->delete(route('admin.products.destroy', $product))

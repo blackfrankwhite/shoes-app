@@ -54,6 +54,12 @@ class ProductData
     {
         $images = $product->images->map(fn ($image): array => [
             'id' => $image->id,
+            'color_id' => $image->color_id,
+            'color' => $image->color ? [
+                'id' => $image->color->id,
+                'name' => $image->color->translated('name'),
+                'hex_code' => $image->color->hex_code,
+            ] : null,
             'path' => $image->path,
             'url' => self::imageUrl($image->path),
             'alt_text' => $image->alt_text,

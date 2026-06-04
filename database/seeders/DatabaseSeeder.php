@@ -247,7 +247,10 @@ class DatabaseSeeder extends Seeder
             $product->images()->delete();
 
             foreach ($data['images'] as $index => $image) {
+                $imageColorSlug = $data['colors'][$index % count($data['colors'])];
+
                 $product->images()->create([
+                    'color_id' => $colors[$imageColorSlug]->id,
                     'path' => '/images/placeholders/'.$image,
                     'alt_text' => $product->name,
                     'sort_order' => $index,
