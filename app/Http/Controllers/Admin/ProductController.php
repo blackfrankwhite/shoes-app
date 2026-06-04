@@ -161,7 +161,7 @@ class ProductController extends Controller
         $nextSortOrder = ((int) $product->images()->max('sort_order')) + 1;
         foreach ($request->file('images', []) as $file) {
             $product->images()->create([
-                'path' => $file->store('products', 'public'),
+                'path' => $file->store('products'),
                 'alt_text' => $product->name,
                 'sort_order' => $nextSortOrder++,
                 'is_main' => false,
@@ -181,7 +181,7 @@ class ProductController extends Controller
     private function deleteImageFile(string $path): void
     {
         if (! Str::startsWith($path, ['/', 'http://', 'https://'])) {
-            Storage::disk('public')->delete($path);
+            Storage::delete($path);
         }
     }
 }

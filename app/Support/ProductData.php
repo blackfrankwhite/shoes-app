@@ -18,7 +18,7 @@ class ProductData
             return $path;
         }
 
-        return Storage::disk('public')->url($path);
+        return Storage::url($path);
     }
 
     public static function card(Product $product): array

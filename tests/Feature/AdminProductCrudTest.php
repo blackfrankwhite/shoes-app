@@ -18,7 +18,7 @@ class AdminProductCrudTest extends TestCase
 
     public function test_admin_can_create_update_and_delete_product(): void
     {
-        Storage::fake('public');
+        Storage::fake(config('filesystems.default'));
 
         $admin = User::factory()->admin()->create();
         $category = Category::factory()->create();
