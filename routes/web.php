@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\InquiryController as AdminInquiryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\SizeController as AdminSizeController;
+use App\Http\Controllers\Admin\StorefrontController as AdminStorefrontController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\InquiryController;
@@ -35,6 +36,8 @@ Route::middleware(['auth', 'verified', 'can:access-admin'])
     ->name('admin.')
     ->group(function (): void {
         Route::get('/', AdminDashboardController::class)->name('dashboard');
+        Route::get('storefront', [AdminStorefrontController::class, 'edit'])->name('storefront.edit');
+        Route::post('storefront', [AdminStorefrontController::class, 'update'])->name('storefront.update');
         Route::resource('products', AdminProductController::class);
         Route::resource('categories', AdminCategoryController::class)->except('show');
         Route::resource('sizes', AdminSizeController::class)->except('show');

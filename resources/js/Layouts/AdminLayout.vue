@@ -7,6 +7,7 @@ const flashSuccess = computed(() => page.props.flash?.success);
 
 const nav = [
     ['admin.layout.dashboard', 'admin.dashboard'],
+    ['admin.layout.storefront', 'admin.storefront.edit'],
     ['admin.layout.products', 'admin.products.index'],
     ['admin.layout.categories', 'admin.categories.index'],
     ['admin.layout.sizes', 'admin.sizes.index'],

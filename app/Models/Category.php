@@ -19,6 +19,7 @@ class Category extends Model
         'slug',
         'description',
         'description_translations',
+        'image_path',
         'is_active',
     ];
 

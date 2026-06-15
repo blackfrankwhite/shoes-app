@@ -24,15 +24,28 @@ const form = useForm({
         ru: props.category?.description_translations?.ru || '',
     },
     is_active: props.category?.is_active ?? true,
+    image: null,
+    remove_image: false,
 });
 
 const submit = () => {
     if (isEdit.value) {
-        form.put(route('admin.categories.update', props.category.slug));
+        form.transform((data) => ({ ...data, _method: 'put' })).post(route('admin.categories.update', props.category.slug), {
+            forceFormData: true,
+            preserveScroll: true,
+        });
         return;
     }
 
-    form.post(route('admin.categories.store'));
+    form.post(route('admin.categories.store'), {
+        forceFormData: true,
+        preserveScroll: true,
+    });
+};
+
+const setImage = (event) => {
+    form.image = event.target.files?.[0] || null;
+    form.remove_image = false;
 };
 </script>
 
@@ -63,6 +76,19 @@ const submit = () => {
                 <label class="text-sm font-medium">{{ $t('common.description') }}</label>
                 <textarea v-model="form.description" rows="4" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                 <p v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</p>
+            </div>
+            <div>
+                <label class="text-sm font-medium">{{ $t('common.image') }}</label>
+                <div v-if="category?.image_url" class="mt-2">
+                    <img :src="category.image_url" :alt="category.name" class="aspect-[4/3] w-full bg-gray-100 object-cover" />
+                    <label class="mt-3 flex items-center gap-2 text-sm text-red-700">
+                        <input v-model="form.remove_image" type="checkbox" class="border-gray-300 text-red-700 focus:ring-red-700" />
+                        {{ $t('common.delete') }}
+                    </label>
+                </div>
+                <input type="file" accept="image/*" class="mt-2 block w-full text-sm" @change="setImage" />
+                <p v-if="form.image" class="mt-2 break-all text-sm text-gray-600">{{ form.image.name }}</p>
+                <p v-if="form.errors.image" class="mt-1 text-sm text-red-600">{{ form.errors.image }}</p>
             </div>
             <div class="border-t border-gray-200 pt-5">
                 <h2 class="text-lg font-semibold">{{ $t('common.translations') }}</h2>

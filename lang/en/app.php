@@ -166,6 +166,7 @@ return [
         'layout' => [
             'title' => 'Factory Admin',
             'dashboard' => 'Dashboard',
+            'storefront' => 'Storefront',
             'products' => 'Products',
             'categories' => 'Categories',
             'sizes' => 'Sizes',
@@ -188,6 +189,14 @@ return [
         'catalog' => 'Catalog',
         'attributes' => 'Attributes',
         'reservations' => 'Reservations',
+        'storefront' => [
+            'title' => 'Storefront',
+            'eyebrow' => 'Public homepage',
+            'home_cover' => 'Main page cover',
+            'home_cover_help' => 'Upload one wide image for the main page hero cover.',
+            'remove_home_cover' => 'Remove current cover image',
+            'save' => 'Save storefront',
+        ],
         'products' => [
             'create' => 'Create product',
             'edit' => 'Edit product',
@@ -284,6 +293,7 @@ return [
         'color_created' => 'Color created.',
         'color_updated' => 'Color updated.',
         'color_deleted' => 'Color deleted.',
+        'storefront_updated' => 'Storefront updated.',
         'inquiry_status_updated' => 'Inquiry status updated.',
     ],
     'validation' => [

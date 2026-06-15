@@ -166,6 +166,7 @@ return [
         'layout' => [
             'title' => 'Админ фабрики',
             'dashboard' => 'Панель',
+            'storefront' => 'Витрина',
             'products' => 'Товары',
             'categories' => 'Категории',
             'sizes' => 'Размеры',
@@ -188,6 +189,14 @@ return [
         'catalog' => 'Каталог',
         'attributes' => 'Атрибуты',
         'reservations' => 'Бронирования',
+        'storefront' => [
+            'title' => 'Витрина',
+            'eyebrow' => 'Публичная главная страница',
+            'home_cover' => 'Обложка главной страницы',
+            'home_cover_help' => 'Загрузите одно широкое изображение для обложки главной страницы.',
+            'remove_home_cover' => 'Удалить текущую обложку',
+            'save' => 'Сохранить витрину',
+        ],
         'products' => [
             'create' => 'Создать товар',
             'edit' => 'Редактировать товар',
@@ -284,6 +293,7 @@ return [
         'color_created' => 'Цвет создан.',
         'color_updated' => 'Цвет обновлен.',
         'color_deleted' => 'Цвет удален.',
+        'storefront_updated' => 'Витрина обновлена.',
         'inquiry_status_updated' => 'Статус запроса обновлен.',
     ],
     'validation' => [

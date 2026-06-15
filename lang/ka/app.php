@@ -165,7 +165,8 @@ return [
     'admin' => [
         'layout' => [
             'title' => 'ფაბრიკის ადმინი',
-            'dashboard' => 'დაფა',
+            'dashboard' => 'დეშბორდი',
+            'storefront' => 'მთავარი გვერდი',
             'products' => 'პროდუქცია',
             'categories' => 'კატეგორიები',
             'sizes' => 'ზომები',
@@ -173,7 +174,7 @@ return [
             'inquiries' => 'მოთხოვნები',
         ],
         'dashboard' => [
-            'title' => 'დაფა',
+            'title' => 'დეშბორდი',
             'eyebrow' => 'ფაბრიკის ადმინი',
             'new_product' => 'ახალი პროდუქტი',
             'recent_inquiries' => 'ბოლო მოთხოვნები',
@@ -188,6 +189,14 @@ return [
         'catalog' => 'კატალოგი',
         'attributes' => 'ატრიბუტები',
         'reservations' => 'დაჯავშნები',
+        'storefront' => [
+            'title' => 'მთავარი გვერდი',
+            'eyebrow' => 'საჯარო მთავარი გვერდი',
+            'home_cover' => 'მთავარი გვერდის ქავერი',
+            'home_cover_help' => 'ატვირთეთ ერთი ფართო სურათი მთავარი გვერდის ქავერისთვის.',
+            'remove_home_cover' => 'მიმდინარე ქავერის წაშლა',
+            'save' => 'შენახვა',
+        ],
         'products' => [
             'create' => 'პროდუქტის შექმნა',
             'edit' => 'პროდუქტის რედაქტირება',
@@ -284,6 +293,7 @@ return [
         'color_created' => 'ფერი შეიქმნა.',
         'color_updated' => 'ფერი განახლდა.',
         'color_deleted' => 'ფერი წაიშალა.',
+        'storefront_updated' => 'ვიტრინა განახლდა.',
         'inquiry_status_updated' => 'მოთხოვნის სტატუსი განახლდა.',
     ],
     'validation' => [

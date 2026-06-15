@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\SiteSetting;
 use App\Support\ProductData;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,12 +33,16 @@ class HomeController extends Controller
                 'name' => $category->translated('name'),
                 'slug' => $category->slug,
                 'description' => $category->translated('description'),
+                'image' => $category->image_path ? ProductData::imageUrl($category->image_path) : null,
                 'products_count' => $category->products_count,
             ]);
+
+        $heroImage = SiteSetting::value('home_cover_image_path');
 
         return Inertia::render('Public/Home', [
             'featuredProducts' => $featuredProducts,
             'categories' => $categories,
+            'heroImage' => $heroImage ? ProductData::imageUrl($heroImage) : null,
         ]);
     }
 }

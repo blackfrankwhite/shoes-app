@@ -41,6 +41,8 @@ class CategoryRequest extends FormRequest
             'description_translations' => ['array'],
             'description_translations.en' => ['nullable', 'string'],
             'description_translations.ru' => ['nullable', 'string'],
+            'image' => ['nullable', 'image', 'max:4096'],
+            'remove_image' => ['boolean'],
             'is_active' => ['boolean'],
         ];
     }

@@ -13,9 +13,13 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    heroImage: {
+        type: String,
+        default: null,
+    },
 });
 
-const heroImage = computed(() => props.featuredProducts[0]?.image || '/images/placeholders/shoe-1.png');
+const heroImage = computed(() => props.heroImage || props.featuredProducts[0]?.image || '/images/placeholders/shoe-1.png');
 </script>
 
 <template>
@@ -56,25 +60,19 @@ const heroImage = computed(() => props.featuredProducts[0]?.image || '/images/pl
                     v-for="category in categories"
                     :key="category.id"
                     :href="route('products.index', { locale: $page.props.i18n.locale, category: category.slug })"
-                    class="border border-gray-200 p-4 transition hover:border-black sm:p-5"
+                    class="group overflow-hidden border border-gray-200 transition hover:border-black"
                 >
-                    <h3 class="font-medium">{{ category.name }}</h3>
-                    <p class="mt-2 min-h-10 text-sm leading-5 text-gray-600">{{ category.description }}</p>
-                    <p class="mt-4 text-xs uppercase tracking-wide text-gray-500">{{ $t('public.home.products_count', { count: category.products_count }) }}</p>
+                    <img
+                        :src="category.image || '/images/placeholders/shoe-2.png'"
+                        :alt="category.name"
+                        class="aspect-[4/3] w-full bg-gray-100 object-cover transition duration-300 group-hover:scale-[1.03]"
+                    />
+                    <div class="p-4 sm:p-5">
+                        <h3 class="font-medium">{{ category.name }}</h3>
+                        <p class="mt-2 min-h-10 text-sm leading-5 text-gray-600">{{ category.description }}</p>
+                        <p class="mt-4 text-xs uppercase tracking-wide text-gray-500">{{ $t('public.home.products_count', { count: category.products_count }) }}</p>
+                    </div>
                 </Link>
-            </div>
-        </section>
-
-        <section class="mx-auto max-w-7xl px-4 pb-10 sm:px-6 lg:px-8">
-            <div class="flex items-end justify-between gap-4 border-t border-gray-200 pt-12">
-                <div>
-                    <p class="text-xs uppercase tracking-[0.18em] text-gray-500">{{ $t('public.home.featured_eyebrow') }}</p>
-                    <h2 class="mt-2 text-2xl font-semibold">{{ $t('public.home.featured_title') }}</h2>
-                </div>
-            </div>
-
-            <div class="mt-6 grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 sm:gap-y-10 lg:grid-cols-4">
-                <ProductCard v-for="product in featuredProducts" :key="product.id" :product="product" />
             </div>
         </section>
     </PublicLayout>
