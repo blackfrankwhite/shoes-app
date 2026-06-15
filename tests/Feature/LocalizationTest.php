@@ -20,7 +20,7 @@ class LocalizationTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->where('i18n.locale', 'ka')
-                ->where('i18n.translations.app_name', 'თბილისის ფეხსაცმლის ფაბრიკა')
+                ->where('i18n.translations.app_name', 'Un Shoes')
                 ->where('i18n.translations.nav.products', 'პროდუქცია')
             );
 
