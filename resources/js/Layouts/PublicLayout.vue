@@ -12,8 +12,8 @@ const locale = computed(() => page.props.i18n?.locale || 'ka');
     <div class="min-h-screen bg-white text-gray-950">
         <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
             <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-                <Link :href="route('home', { locale })" class="max-w-full break-words text-sm font-semibold uppercase tracking-[0.14em] text-black sm:tracking-[0.18em]">
-                    {{ $t('app_name') }}
+                <Link :href="route('home', { locale })" class="inline-flex w-fit items-center">
+                    <img src="/images/unshoes.jpeg" :alt="$t('app_name')" class="h-10 w-10 rounded-full object-cover" />
                 </Link>
 
                 <nav class="flex items-center justify-between gap-3 overflow-x-auto text-sm text-gray-700 lg:justify-end">

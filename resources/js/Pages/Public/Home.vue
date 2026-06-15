@@ -37,9 +37,6 @@ const heroImage = computed(() => props.featuredProducts[0]?.image || '/images/pl
                         <Link :href="route('products.index', { locale: $page.props.i18n.locale })" class="inline-flex justify-center border border-black bg-black px-5 py-3 text-sm font-medium text-white">
                             {{ $t('public.home.browse') }}
                         </Link>
-                        <Link :href="route('about', { locale: $page.props.i18n.locale })" class="inline-flex justify-center border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-900">
-                            {{ $t('public.home.factory_info') }}
-                        </Link>
                     </div>
                 </div>
             </div>

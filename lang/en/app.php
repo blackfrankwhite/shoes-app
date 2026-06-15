@@ -109,9 +109,14 @@ return [
         ],
         'about' => [
             'title' => 'About',
-            'eyebrow' => 'Tbilisi, Georgia',
-            'headline' => 'Factory showroom and reservation desk',
-            'body' => 'This placeholder page is ready for the factory address, working hours, phone number, production story, and Georgian-language copy. Customers can reserve a pair online and complete payment physically at the factory.',
+            'eyebrow' => 'More than 30 years of experience',
+            'headline' => 'UN Shoes — handmade footwear from natural materials',
+            'body' => [
+                'UN Shoes has been creating high-quality handmade footwear for more than 30 years. Since the beginning, our main principle has remained unchanged: natural materials only and careful attention to every pair.',
+                'We create distinctive, comfortable, and durable shoes for people who value quality, natural materials, and thoughtful details. Our goal is to offer a product that is not only beautiful, but also comfortable for everyday wear.',
+                'Today, UN Shoes serves customers throughout Georgia and provides fast, reliable delivery.',
+                'UN Shoes — natural materials, distinctive quality, and 30 years of experience.',
+            ],
             'browse_stock' => 'Browse stock',
             'address' => 'Address',
             'address_value' => 'Tbilisi factory address placeholder',
