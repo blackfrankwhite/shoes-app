@@ -20,6 +20,7 @@ return [
     ],
     'footer' => [
         'mobile' => '+995 598 79 26 26',
+        'facebook_followers' => '200K+ followers',
     ],
     'common' => [
         'actions' => 'Actions',

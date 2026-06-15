@@ -11,6 +11,7 @@ const socialLinks = [
     {
         name: 'Facebook',
         href: 'https://www.facebook.com/unshoes.geo',
+        meta: 'footer.facebook_followers',
     },
     {
         name: 'Instagram',
@@ -60,9 +61,12 @@ const socialLinks = [
                         :href="link.href"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="text-gray-700 transition hover:text-black"
+                        class="group text-gray-700 transition hover:text-black"
                     >
-                        {{ link.name }}
+                        <span>{{ link.name }}</span>
+                        <span v-if="link.meta" class="ml-2 text-xs text-gray-400 group-hover:text-gray-600">
+                            {{ $t(link.meta) }}
+                        </span>
                     </a>
                 </div>
             </div>
