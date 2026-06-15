@@ -23,7 +23,12 @@ return [
         'no_checkout_title' => 'Без онлайн-оплаты',
         'no_checkout_text' => 'Бронируйте онлайн, осматривайте и оплачивайте на месте.',
         'contact_title' => 'Контакты',
-        'contact_text' => 'Тбилиси, Грузия · +995 599 00 00 00',
+        'contact_text' => 'Тбилиси, Грузия · +995 598 79 26 26',
+        'social_title' => 'Социальные сети',
+        'facebook_followers_count' => '200K+',
+        'facebook_followers_label' => 'подписчиков в Facebook',
+        'follow_facebook' => 'Подписаться',
+        'open_social' => 'Открыть профиль',
     ],
     'common' => [
         'actions' => 'Действия',

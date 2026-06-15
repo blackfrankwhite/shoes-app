@@ -24,6 +24,11 @@ return [
         'no_checkout_text' => 'გადახდა შეკვეთის მიღებისას',
         'contact_title' => 'საკონტაქტო ინფორმაცია',
         'contact_text' => 'თბილისი, საქართველო ·  +995 598 79 26 26',
+        'social_title' => 'სოციალური ქსელები',
+        'facebook_followers_count' => '200K+',
+        'facebook_followers_label' => 'Facebook გამომწერი',
+        'follow_facebook' => 'გამოგვყევით',
+        'open_social' => 'გვერდის გახსნა',
     ],
     'common' => [
         'actions' => 'ქმედებები',
