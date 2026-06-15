@@ -13,7 +13,7 @@ return [
         'about' => 'ჩვენ შესახებ',
         'admin' => 'ადმინი',
         'admin_login' => 'ადმინის შესვლა',
-        'storefront' => 'მაღაზია',
+        'storefront' => 'un shoes',
         'profile' => 'პროფილი',
         'logout' => 'გასვლა',
         'language' => 'ენა',
@@ -95,7 +95,7 @@ return [
     ],
     'public' => [
         'home' => [
-            'title' => 'მაღაზია',
+            'title' => 'un shoes',
             'eyebrow' => '100% ნატურალური ტყავი',
             'headline' => 'Un Shoes',
             'intro' => 'შეარჩიე სასურველი მოდელი და მიიღე საქართველოს ნებისმიერ წერტილში',
