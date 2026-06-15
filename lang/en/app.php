@@ -19,16 +19,7 @@ return [
         'language' => 'Language',
     ],
     'footer' => [
-        'location' => 'Factory showroom and reservations in Tbilisi, Georgia.',
-        'no_checkout_title' => 'No online checkout',
-        'no_checkout_text' => 'Reserve online, inspect and pay physically on-site.',
-        'contact_title' => 'Contact placeholder',
-        'contact_text' => 'Tbilisi, Georgia · +995 598 79 26 26',
-        'social_title' => 'Social channels',    
-        'facebook_followers_count' => '200K+',
-        'facebook_followers_label' => 'Facebook followers',
-        'follow_facebook' => 'Follow on Facebook',
-        'open_social' => 'Open profile',
+        'mobile' => '+995 598 79 26 26',
     ],
     'common' => [
         'actions' => 'Actions',
