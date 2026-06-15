@@ -13,7 +13,7 @@ return [
         'about' => 'About',
         'admin' => 'Admin',
         'admin_login' => 'Admin login',
-        'storefront' => 'Storefront',
+        'storefront' => 'Un Shoes',
         'profile' => 'Profile',
         'logout' => 'Log out',
         'language' => 'Language',
@@ -95,7 +95,7 @@ return [
     ],
     'public' => [
         'home' => [
-            'title' => 'Storefront',
+            'title' => 'Un Shoes',
             'eyebrow' => 'Factory showroom · Tbilisi',
             'headline' => 'Tbilisi Shoe Factory',
             'intro' => 'Browse current factory stock, reserve a pair, and pay in person after inspection at the showroom.',

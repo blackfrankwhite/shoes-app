@@ -19,8 +19,6 @@ const heroImage = computed(() => props.featuredProducts[0]?.image || '/images/pl
 </script>
 
 <template>
-    <Head :title="$t('public.home.title')" />
-
     <PublicLayout>
         <section
             class="relative min-h-[520px] border-b border-gray-200 bg-gray-100 bg-cover bg-center sm:min-h-[58vh]"
