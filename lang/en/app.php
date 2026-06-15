@@ -20,7 +20,7 @@ return [
     ],
     'footer' => [
         'mobile' => '+995 598 79 26 26',
-        'facebook_followers' => '200K+ followers',
+        'facebook_followers' => '200K+',
     ],
     'common' => [
         'actions' => 'Actions',
@@ -153,7 +153,7 @@ return [
             'eyebrow' => 'Reservation request',
             'headline' => 'Contact factory',
             'intro' => 'Submit your details and the factory team will call to confirm availability. Payment is handled physically on-site.',
-            'placeholder_phone' => '+995 599 00 00 00',
+            'placeholder_phone' => '+995 598 79 26 26',
             'submit' => 'Submit reservation',
         ],
     ],

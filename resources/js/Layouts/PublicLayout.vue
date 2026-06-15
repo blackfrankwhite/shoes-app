@@ -6,18 +6,6 @@ import { computed } from 'vue';
 const page = usePage();
 const flashSuccess = computed(() => page.props.flash?.success);
 const locale = computed(() => page.props.i18n?.locale || 'ka');
-
-const socialLinks = [
-    {
-        name: 'Facebook',
-        href: 'https://www.facebook.com/unshoes.geo',
-        meta: 'footer.facebook_followers',
-    },
-    {
-        name: 'Instagram',
-        href: 'https://www.instagram.com/unshoesgeo',
-    },
-];
 </script>
 
 <template>
@@ -50,23 +38,36 @@ const socialLinks = [
 
         <footer class="mt-20 border-t border-gray-200">
             <div class="mx-auto flex max-w-7xl flex-col gap-5 px-4 py-8 text-sm text-gray-600 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-                <a href="tel:+995598792626" class="w-fit text-gray-700 transition hover:text-black">
-                    {{ $t('footer.mobile') }}
-                </a>
 
-                <div class="flex flex-wrap gap-x-6 gap-y-3">
+                <div class="flex items-center gap-3">
                     <a
-                        v-for="link in socialLinks"
-                        :key="link.name"
-                        :href="link.href"
+                        href="https://www.facebook.com/unshoes.geo"
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="group text-gray-700 transition hover:text-black"
+                        class="group inline-flex h-10 items-center gap-3 rounded-full border border-gray-200 px-3 text-gray-700 transition hover:border-gray-400 hover:text-black"
+                        aria-label="Facebook"
                     >
-                        <span>{{ link.name }}</span>
-                        <span v-if="link.meta" class="ml-2 text-xs text-gray-400 group-hover:text-gray-600">
-                            {{ $t(link.meta) }}
+                        <svg class="size-4" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                            <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.84c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.23.2 2.23.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.44 2.91h-2.34V22C18.34 21.24 22 17.08 22 12.06Z" />
+                        </svg>
+                        <span class="h-4 w-px bg-gray-200 transition group-hover:bg-gray-300" aria-hidden="true"></span>
+                        <span class="text-xs font-medium tracking-normal text-gray-500 transition group-hover:text-gray-700">
+                            {{ $t('footer.facebook_followers') }}
                         </span>
+                    </a>
+
+                    <a
+                        href="https://www.instagram.com/unshoesgeo"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex size-10 items-center justify-center rounded-full border border-gray-200 text-gray-700 transition hover:border-gray-400 hover:text-black"
+                        aria-label="Instagram"
+                    >
+                        <svg class="size-4" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect width="16" height="16" x="4" y="4" rx="4.5" />
+                            <circle cx="12" cy="12" r="3.4" />
+                            <path d="M16.9 7.2h.01" stroke-linecap="round" />
+                        </svg>
                     </a>
                 </div>
             </div>
