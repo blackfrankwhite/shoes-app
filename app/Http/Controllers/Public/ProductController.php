@@ -20,13 +20,14 @@ class ProductController extends Controller
 
         $products = Product::query()
             ->active()
-            ->with(['category', 'images'])
+            ->with(['category', 'images', 'colors'])
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->where('name', 'like', "%{$search}%")
                         ->orWhere('name_translations->en', 'like', "%{$search}%")
                         ->orWhere('name_translations->ru', 'like', "%{$search}%")
-                        ->orWhere('sku', 'like', "%{$search}%");
+                        ->orWhere('sku', 'like', "%{$search}%")
+                        ->orWhereHas('colors', fn ($query) => $query->where('color_product.sku', 'like', "%{$search}%"));
                 });
             })
             ->when($filters['category'] ?? null, fn ($query, string $slug) => $query->whereHas('category', fn ($query) => $query->where('slug', $slug)))
@@ -86,7 +87,7 @@ class ProductController extends Controller
                 $query->where('category_id', $product->category_id)
                     ->orWhere('sex', $product->sex);
             })
-            ->with(['category', 'images'])
+            ->with(['category', 'images', 'colors'])
             ->limit(4)
             ->get()
             ->map(fn (Product $related): array => ProductData::card($related));

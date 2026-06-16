@@ -39,6 +39,10 @@ class AdminProductCrudTest extends TestCase
                 'is_active' => true,
                 'sizes' => [$size->id],
                 'colors' => [$color->id, $secondColor->id],
+                'color_skus' => [
+                    $color->id => 'ADMIN-BLK',
+                    $secondColor->id => 'ADMIN-TAN',
+                ],
                 'images' => [UploadedFile::fake()->image('shoe.png', 900, 1100)],
                 'new_image_color_ids' => [$color->id],
             ])
@@ -52,6 +56,11 @@ class AdminProductCrudTest extends TestCase
             'name' => 'Admin Created Shoe',
             'slug' => 'admin-created-shoe',
             'sku' => null,
+        ]);
+        $this->assertDatabaseHas('color_product', [
+            'product_id' => $product->id,
+            'color_id' => $color->id,
+            'sku' => 'ADMIN-BLK',
         ]);
         $this->assertDatabaseHas('product_images', [
             'product_id' => $product->id,
@@ -72,6 +81,10 @@ class AdminProductCrudTest extends TestCase
                 'is_active' => true,
                 'sizes' => [$size->id],
                 'colors' => [$color->id, $secondColor->id],
+                'color_skus' => [
+                    $color->id => 'ADMIN-BLK-UPDATED',
+                    $secondColor->id => 'ADMIN-TAN-UPDATED',
+                ],
                 'image_color_ids' => [$image->id => $secondColor->id],
                 'main_image_id' => $image->id,
             ])
@@ -83,6 +96,11 @@ class AdminProductCrudTest extends TestCase
         $this->assertSame('women', $product->sex);
         $this->assertSame(5, $product->stock_quantity);
         $this->assertNull($product->sku);
+        $this->assertDatabaseHas('color_product', [
+            'product_id' => $product->id,
+            'color_id' => $secondColor->id,
+            'sku' => 'ADMIN-TAN-UPDATED',
+        ]);
         $this->assertDatabaseHas('product_images', [
             'id' => $image->id,
             'color_id' => $secondColor->id,

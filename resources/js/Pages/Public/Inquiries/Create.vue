@@ -29,6 +29,7 @@ const selectedImage = computed(() => {
 
     return image?.url || props.product.image;
 });
+const selectedColorSku = computed(() => props.product.colors.find((color) => Number(color.id) === Number(form.color_id))?.sku || props.product.sku);
 
 const submit = () => {
     form.post(route('inquiries.store', { locale: locale.value, product: props.product.slug }));
@@ -52,7 +53,7 @@ const submit = () => {
                     <div>
                         <h1 class="break-words text-xl font-semibold lg:mt-4 lg:text-2xl">{{ product.name }}</h1>
                         <p class="mt-2 text-sm text-gray-600">
-                            {{ product.formatted_price }}<span v-if="product.sku"> · {{ product.sku }}</span>
+                            {{ product.formatted_price }}<span v-if="selectedColorSku"> · {{ selectedColorSku }}</span>
                         </p>
                     </div>
                 </aside>

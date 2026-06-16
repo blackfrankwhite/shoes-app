@@ -4,8 +4,10 @@ namespace App\Http\Requests\Admin;
 
 use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class ProductRequest extends FormRequest
 {
@@ -59,6 +61,8 @@ class ProductRequest extends FormRequest
             'sizes.*' => ['integer', 'exists:sizes,id'],
             'colors' => ['array'],
             'colors.*' => ['integer', 'exists:colors,id'],
+            'color_skus' => ['array'],
+            'color_skus.*' => ['nullable', 'string', 'max:255'],
             'images' => ['array'],
             'images.*' => ['image', 'max:4096'],
             'delete_images' => ['array'],
@@ -71,5 +75,42 @@ class ProductRequest extends FormRequest
             'new_image_color_ids.*' => ['nullable', 'integer', 'exists:colors,id'],
             'main_image_id' => ['nullable', 'integer', 'exists:product_images,id'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            $product = $this->route('product');
+            $selectedColorIds = collect($this->input('colors', []))
+                ->map(fn (mixed $id): int => (int) $id)
+                ->filter()
+                ->unique()
+                ->values();
+            $colorSkus = collect($this->input('color_skus', []));
+
+            $selectedColorIds->each(function (int $colorId) use ($validator, $colorSkus, $product): void {
+                $sku = trim((string) $colorSkus->get($colorId, ''));
+
+                if ($sku === '') {
+                    $validator->errors()->add("color_skus.{$colorId}", __('validation.required', ['attribute' => __('app.common.sku')]));
+
+                    return;
+                }
+
+                $exists = DB::table('color_product')
+                    ->where('sku', $sku)
+                    ->when($product, function ($query) use ($product, $colorId): void {
+                        $query->where(function ($query) use ($product, $colorId): void {
+                            $query->where('product_id', '!=', $product->id)
+                                ->orWhere('color_id', '!=', $colorId);
+                        });
+                    })
+                    ->exists();
+
+                if ($exists) {
+                    $validator->errors()->add("color_skus.{$colorId}", __('validation.unique', ['attribute' => __('app.common.sku')]));
+                }
+            });
+        });
     }
 }

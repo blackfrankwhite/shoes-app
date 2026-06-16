@@ -243,7 +243,9 @@ class DatabaseSeeder extends Seeder
             );
 
             $product->sizes()->sync(collect($data['sizes'])->map(fn (int $size) => $sizes[$size]->id));
-            $product->colors()->sync(collect($data['colors'])->map(fn (string $color) => $colors[$color]->id));
+            $product->colors()->sync(collect($data['colors'])->mapWithKeys(fn (string $color): array => [
+                $colors[$color]->id => ['sku' => $data['sku'].'-'.str($color)->upper()],
+            ]));
             $product->images()->delete();
 
             foreach ($data['images'] as $index => $image) {

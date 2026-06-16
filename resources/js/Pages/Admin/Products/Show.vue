@@ -37,10 +37,6 @@ defineProps({
             </div>
             <aside class="border border-gray-200 bg-white p-5">
                 <dl class="space-y-4 text-sm">
-                    <div v-if="product.sku">
-                        <dt class="font-medium">{{ $t('common.sku') }}</dt>
-                        <dd class="mt-1 text-gray-600">{{ product.sku }}</dd>
-                    </div>
                     <div>
                         <dt class="font-medium">{{ $t('common.category') }}</dt>
                         <dd class="mt-1 text-gray-600">{{ product.category?.name }}</dd>
@@ -59,7 +55,11 @@ defineProps({
                     </div>
                     <div>
                         <dt class="font-medium">{{ $t('common.colors') }}</dt>
-                        <dd class="mt-1 text-gray-600">{{ product.colors.map((color) => color.name).join(', ') }}</dd>
+                        <dd class="mt-1 space-y-1 text-gray-600">
+                            <p v-for="color in product.colors" :key="color.id">
+                                {{ color.name }}<span v-if="color.sku"> · {{ color.sku }}</span>
+                            </p>
+                        </dd>
                     </div>
                     <div>
                         <dt class="font-medium">{{ $t('common.description') }}</dt>

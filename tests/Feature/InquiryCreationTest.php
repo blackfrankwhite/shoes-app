@@ -25,7 +25,7 @@ class InquiryCreationTest extends TestCase
             'is_active' => true,
         ]);
         $product->sizes()->attach($size);
-        $product->colors()->attach($color);
+        $product->colors()->attach($color, ['sku' => 'RES-BLK']);
 
         $response = $this->post(route('inquiries.store', ['locale' => 'ka', 'product' => $product]), [
             'name' => 'Nino Beridze',
@@ -63,7 +63,7 @@ class InquiryCreationTest extends TestCase
             'is_active' => true,
         ]);
         $product->sizes()->attach($availableSize);
-        $product->colors()->attach($color);
+        $product->colors()->attach($color, ['sku' => 'RES-COLOR']);
 
         $response = $this
             ->from(route('inquiries.create', ['locale' => 'ka', 'product' => $product]))

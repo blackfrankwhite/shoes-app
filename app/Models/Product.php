@@ -67,7 +67,7 @@ class Product extends Model
 
     public function colors(): BelongsToMany
     {
-        return $this->belongsToMany(Color::class)->orderBy('name');
+        return $this->belongsToMany(Color::class)->withPivot('sku')->orderBy('name');
     }
 
     public function images(): HasMany

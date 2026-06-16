@@ -26,13 +26,14 @@ class ProductController extends Controller
         $filters = $request->only(['search', 'category', 'active']);
 
         $products = Product::query()
-            ->with(['category', 'images'])
+            ->with(['category', 'images', 'colors'])
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->where('name', 'like', "%{$search}%")
                         ->orWhere('name_translations->en', 'like', "%{$search}%")
                         ->orWhere('name_translations->ru', 'like', "%{$search}%")
-                        ->orWhere('sku', 'like', "%{$search}%");
+                        ->orWhere('sku', 'like', "%{$search}%")
+                        ->orWhereHas('colors', fn ($query) => $query->where('color_product.sku', 'like', "%{$search}%"));
                 });
             })
             ->when($filters['category'] ?? null, fn ($query, string $slug) => $query->whereHas('category', fn ($query) => $query->where('slug', $slug)))
@@ -74,7 +75,7 @@ class ProductController extends Controller
         $product = Product::create($this->productData($validated));
 
         $product->sizes()->sync($validated['sizes'] ?? []);
-        $product->colors()->sync($validated['colors'] ?? []);
+        $this->syncColors($product, $validated);
         $this->syncImages($product, $request, $validated);
 
         return redirect()->route('admin.products.show', $product)->with('success', __('app.flash.product_created'));
@@ -110,7 +111,7 @@ class ProductController extends Controller
         $validated = $request->validated();
         $product->update($this->productData($validated));
         $product->sizes()->sync($validated['sizes'] ?? []);
-        $product->colors()->sync($validated['colors'] ?? []);
+        $this->syncColors($product, $validated);
         $this->syncImages($product, $request, $validated);
 
         return redirect()->route('admin.products.show', $product)->with('success', __('app.flash.product_updated'));
@@ -165,6 +166,18 @@ class ProductController extends Controller
             'featured',
             'is_active',
         ])->all();
+    }
+
+    private function syncColors(Product $product, array $validated): void
+    {
+        $colorSkus = collect($validated['color_skus'] ?? []);
+        $colors = collect($validated['colors'] ?? [])
+            ->mapWithKeys(fn (mixed $colorId): array => [
+                (int) $colorId => ['sku' => trim((string) $colorSkus->get((int) $colorId))],
+            ])
+            ->all();
+
+        $product->colors()->sync($colors);
     }
 
     private function syncImages(Product $product, ProductRequest $request, array $validated): void

@@ -2,7 +2,7 @@
 import ProductCard from '@/Components/Public/ProductCard.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
     product: {
@@ -22,6 +22,10 @@ const props = defineProps({
 const page = usePage();
 const selectedSize = ref(props.product.sizes[0]?.id || null);
 const selectedColor = ref(props.product.colors[0]?.id || null);
+const selectedImageIndex = ref(0);
+const lightboxIndex = ref(0);
+const lightboxOpen = ref(false);
+const selectedColorSku = computed(() => props.product.colors.find((color) => Number(color.id) === Number(selectedColor.value))?.sku || props.product.sku);
 
 const visibleImages = computed(() => {
     const colorImages = selectedColor.value
@@ -30,8 +34,43 @@ const visibleImages = computed(() => {
 
     return colorImages.length ? colorImages : props.product.images;
 });
-const primaryImage = computed(() => visibleImages.value[0] || props.product.images[0]);
-const secondaryImages = computed(() => visibleImages.value.slice(1));
+const primaryImage = computed(() => visibleImages.value[selectedImageIndex.value] || visibleImages.value[0] || props.product.images[0]);
+const canNavigateImages = computed(() => visibleImages.value.length > 1);
+
+watch(selectedColor, () => {
+    selectedImageIndex.value = 0;
+    lightboxIndex.value = 0;
+    lightboxOpen.value = false;
+});
+
+const selectImage = (index) => {
+    selectedImageIndex.value = index;
+};
+
+const showNextMobileImage = () => {
+    if (! canNavigateImages.value) return;
+
+    selectedImageIndex.value = (selectedImageIndex.value + 1) % visibleImages.value.length;
+};
+
+const openLightbox = (index) => {
+    lightboxIndex.value = index;
+    lightboxOpen.value = true;
+};
+
+const closeLightbox = () => {
+    lightboxOpen.value = false;
+};
+
+const previousLightboxImage = () => {
+    lightboxIndex.value = (lightboxIndex.value - 1 + visibleImages.value.length) % visibleImages.value.length;
+};
+
+const nextLightboxImage = () => {
+    lightboxIndex.value = (lightboxIndex.value + 1) % visibleImages.value.length;
+};
+
+const lightboxImage = computed(() => visibleImages.value[lightboxIndex.value] || primaryImage.value);
 
 const reserveUrl = computed(() => {
     const params = new URLSearchParams();
@@ -59,36 +98,43 @@ const reserveUrl = computed(() => {
 
             <div class="mt-5 grid gap-7 sm:mt-8 lg:grid-cols-[minmax(0,1.1fr)_420px] lg:gap-10">
                 <div class="lg:hidden">
-                    <div class="aspect-[4/5] overflow-hidden bg-gray-100">
+                    <button type="button" class="block aspect-[4/5] w-full overflow-hidden bg-gray-100 text-left" @click="showNextMobileImage">
                         <img :src="primaryImage.url" :alt="primaryImage.alt_text || product.name" class="h-full w-full object-cover" />
-                    </div>
+                    </button>
 
-                    <div v-if="secondaryImages.length" class="mt-3 flex gap-3 overflow-x-auto pb-1">
-                        <div
-                            v-for="image in secondaryImages"
+                    <div v-if="canNavigateImages" class="mt-3 flex gap-3 overflow-x-auto pb-1">
+                        <button
+                            v-for="(image, index) in visibleImages"
                             :key="image.id"
-                            class="h-24 w-20 shrink-0 overflow-hidden bg-gray-100"
+                            type="button"
+                            :class="[
+                                'h-24 w-20 shrink-0 overflow-hidden border bg-gray-100',
+                                selectedImageIndex === index ? 'border-black' : 'border-transparent',
+                            ]"
+                            @click="selectImage(index)"
                         >
                             <img :src="image.url" :alt="image.alt_text || product.name" class="h-full w-full object-cover" />
-                        </div>
+                        </button>
                     </div>
                 </div>
 
                 <div class="hidden gap-4 lg:grid lg:grid-cols-2">
-                    <div
-                        v-for="image in visibleImages"
+                    <button
+                        v-for="(image, index) in visibleImages"
                         :key="image.id"
-                        class="aspect-[4/5] overflow-hidden bg-gray-100"
+                        type="button"
+                        class="group aspect-[4/5] overflow-hidden bg-gray-100 text-left"
+                        @click="openLightbox(index)"
                     >
-                        <img :src="image.url" :alt="image.alt_text || product.name" class="h-full w-full object-cover" />
-                    </div>
+                        <img :src="image.url" :alt="image.alt_text || product.name" class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
+                    </button>
                 </div>
 
                 <aside class="self-start lg:sticky lg:top-24">
                     <p class="text-xs uppercase tracking-[0.18em] text-gray-500">{{ product.category?.name }} · {{ $t(`sexes.${product.sex}`) }}</p>
                     <h1 class="mt-3 break-words text-2xl font-semibold sm:text-3xl">{{ product.name }}</h1>
                     <p class="mt-3 text-lg text-gray-900">{{ product.formatted_price }}</p>
-                    <p v-if="product.sku" class="mt-2 text-sm text-gray-500">{{ $t('public.show.factory_code', { sku: product.sku }) }}</p>
+                    <p v-if="selectedColorSku" class="mt-2 text-sm text-gray-500">{{ $t('public.show.factory_code', { sku: selectedColorSku }) }}</p>
 
                     <div class="mt-8 border-t border-gray-200 pt-6">
                         <p class="text-sm font-medium">{{ $t('public.show.select_size') }}</p>
@@ -173,5 +219,33 @@ const reserveUrl = computed(() => {
                 <ProductCard v-for="related in relatedProducts" :key="related.id" :product="related" />
             </div>
         </section>
+
+        <div v-if="lightboxOpen" class="fixed inset-0 z-50 hidden bg-white lg:flex lg:items-center lg:justify-center">
+            <button type="button" class="absolute right-6 top-6 flex size-11 items-center justify-center border border-gray-200 text-2xl leading-none text-gray-700 hover:border-black hover:text-black" aria-label="Close" @click="closeLightbox">
+                &times;
+            </button>
+
+            <button
+                v-if="canNavigateImages"
+                type="button"
+                class="absolute left-6 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center border border-gray-200 text-3xl leading-none text-gray-700 hover:border-black hover:text-black"
+                aria-label="Previous image"
+                @click="previousLightboxImage"
+            >
+                ‹
+            </button>
+
+            <img :src="lightboxImage.url" :alt="lightboxImage.alt_text || product.name" class="max-h-[88vh] max-w-[82vw] object-contain" />
+
+            <button
+                v-if="canNavigateImages"
+                type="button"
+                class="absolute right-6 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center border border-gray-200 text-3xl leading-none text-gray-700 hover:border-black hover:text-black"
+                aria-label="Next image"
+                @click="nextLightboxImage"
+            >
+                ›
+            </button>
+        </div>
     </PublicLayout>
 </template>

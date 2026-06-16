@@ -33,7 +33,7 @@ class ProductListingFilterTest extends TestCase
             'is_active' => true,
         ]);
         $matching->sizes()->attach($size42);
-        $matching->colors()->attach($black);
+        $matching->colors()->attach($black, ['sku' => 'MATCH-001-BLK']);
 
         $other = Product::factory()->create([
             'category_id' => $boots->id,
@@ -45,7 +45,7 @@ class ProductListingFilterTest extends TestCase
             'is_active' => true,
         ]);
         $other->sizes()->attach($size38);
-        $other->colors()->attach($tan);
+        $other->colors()->attach($tan, ['sku' => 'OTHER-001-TAN']);
 
         Product::factory()->create([
             'category_id' => $sneakers->id,
@@ -73,7 +73,7 @@ class ProductListingFilterTest extends TestCase
             ->component('Public/Products/Index')
             ->has('products.data', 1)
             ->where('products.data.0.slug', $matching->slug)
-            ->where('products.data.0.sku', $matching->sku)
+            ->where('products.data.0.sku', 'MATCH-001-BLK')
         );
     }
 }

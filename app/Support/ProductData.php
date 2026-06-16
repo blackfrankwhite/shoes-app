@@ -26,6 +26,9 @@ class ProductData
         $mainImage = $product->relationLoaded('images')
             ? ($product->images->firstWhere('is_main', true) ?? $product->images->first())
             : null;
+        $firstColorSku = $product->relationLoaded('colors')
+            ? $product->colors->first()?->pivot?->sku
+            : null;
 
         return [
             'id' => $product->id,
@@ -33,7 +36,7 @@ class ProductData
             'base_name' => $product->name,
             'name_translations' => $product->name_translations ?? [],
             'slug' => $product->slug,
-            'sku' => $product->sku,
+            'sku' => $firstColorSku ?: $product->sku,
             'sex' => $product->sex,
             'price' => (float) $product->price,
             'formatted_price' => 'GEL '.number_format((float) $product->price, 2),
@@ -94,6 +97,7 @@ class ProductData
                 'base_name' => $color->name,
                 'slug' => $color->slug,
                 'hex_code' => $color->hex_code,
+                'sku' => $color->pivot?->sku,
             ])->values(),
             'images' => $images,
         ];

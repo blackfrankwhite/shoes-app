@@ -62,7 +62,7 @@ class LocalizationTest extends TestCase
             'description_translations' => ['en' => 'English product description', 'ru' => 'Русское описание товара'],
             'is_active' => true,
         ]);
-        $product->colors()->attach($color);
+        $product->colors()->attach($color, ['sku' => 'TR-001-BLK']);
         $product->sizes()->attach($size);
 
         $this->get(route('products.index', ['locale' => 'en']))

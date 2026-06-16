@@ -18,6 +18,7 @@ const isEdit = computed(() => Boolean(props.product));
 
 const imageOrder = Object.fromEntries((props.product?.images || []).map((image) => [image.id, image.sort_order]));
 const imageColorIds = Object.fromEntries((props.product?.images || []).map((image) => [image.id, image.color_id || '']));
+const colorSkus = Object.fromEntries((props.product?.colors || []).map((color) => [color.id, color.sku || '']));
 const mainImage = (props.product?.images || []).find((image) => image.is_main) || props.product?.images?.[0];
 
 const form = useForm({
@@ -35,12 +36,12 @@ const form = useForm({
         en: props.product?.description_translations?.en || '',
         ru: props.product?.description_translations?.ru || '',
     },
-    sku: props.product?.sku || '',
     stock_quantity: props.product?.stock_quantity ?? 0,
     featured: props.product?.featured || false,
     is_active: props.product?.is_active ?? true,
     sizes: (props.product?.sizes || []).map((size) => size.id),
     colors: (props.product?.colors || []).map((color) => color.id),
+    color_skus: colorSkus,
     images: [],
     delete_images: [],
     image_order: imageOrder,
@@ -101,11 +102,6 @@ const setFiles = (event) => {
                     <label class="text-sm font-medium">{{ $t('common.slug') }}</label>
                     <input v-model="form.slug" type="text" :placeholder="$t('admin.products.auto_slug')" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
                     <p v-if="form.errors.slug" class="mt-1 text-sm text-red-600">{{ form.errors.slug }}</p>
-                </div>
-                <div>
-                    <label class="text-sm font-medium">{{ $t('common.sku') }} · {{ $t('common.optional') }}</label>
-                    <input v-model="form.sku" type="text" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
-                    <p v-if="form.errors.sku" class="mt-1 text-sm text-red-600">{{ form.errors.sku }}</p>
                 </div>
                 <div>
                     <label class="text-sm font-medium">{{ $t('common.category') }}</label>
@@ -188,12 +184,19 @@ const setFiles = (event) => {
                 </div>
                 <div>
                     <h2 class="text-lg font-semibold">{{ $t('common.colors') }}</h2>
-                    <div class="mt-4 grid gap-2 sm:grid-cols-2">
-                        <label v-for="color in options.colors" :key="color.id" class="flex items-center gap-2 border border-gray-200 px-3 py-2 text-sm">
-                            <input v-model="form.colors" :value="color.id" type="checkbox" class="border-gray-300 text-black focus:ring-black" />
-                            <span class="h-4 w-4 border border-gray-300" :style="{ backgroundColor: color.hex_code || '#ddd' }" />
-                            {{ color.name }}
-                        </label>
+                    <div class="mt-4 grid gap-3">
+                        <div v-for="color in options.colors" :key="color.id" class="border border-gray-200 p-3 text-sm">
+                            <label class="flex items-center gap-2">
+                                <input v-model="form.colors" :value="color.id" type="checkbox" class="border-gray-300 text-black focus:ring-black" />
+                                <span class="h-4 w-4 border border-gray-300" :style="{ backgroundColor: color.hex_code || '#ddd' }" />
+                                {{ color.name }}
+                            </label>
+                            <div v-if="form.colors.map(Number).includes(Number(color.id))" class="mt-3">
+                                <label class="text-xs font-medium uppercase tracking-wide text-gray-500">{{ $t('common.sku') }}</label>
+                                <input v-model="form.color_skus[color.id]" type="text" class="mt-1 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                                <p v-if="form.errors[`color_skus.${color.id}`]" class="mt-1 text-sm text-red-600">{{ form.errors[`color_skus.${color.id}`] }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

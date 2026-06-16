@@ -20,13 +20,16 @@ class InquiryController extends Controller
         $filters = $request->only(['status', 'search']);
 
         $inquiries = Inquiry::query()
-            ->with(['product.category', 'product.images', 'size', 'color'])
+            ->with(['product.category', 'product.images', 'product.colors', 'size', 'color'])
             ->when($filters['status'] ?? null, fn ($query, string $status) => $query->where('status', $status))
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->where('name', 'like', "%{$search}%")
                         ->orWhere('phone', 'like', "%{$search}%")
-                        ->orWhereHas('product', fn ($query) => $query->where('name', 'like', "%{$search}%")->orWhere('sku', 'like', "%{$search}%"));
+                        ->orWhereHas('product', fn ($query) => $query
+                            ->where('name', 'like', "%{$search}%")
+                            ->orWhere('sku', 'like', "%{$search}%")
+                            ->orWhereHas('colors', fn ($query) => $query->where('color_product.sku', 'like', "%{$search}%")));
                 });
             })
             ->latest()
