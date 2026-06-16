@@ -188,20 +188,6 @@ const reserveUrl = computed(() => {
                             <h2 class="font-medium">{{ $t('common.details') }}</h2>
                             <p class="mt-2 text-gray-700">{{ product.description }}</p>
                         </div>
-                        <div>
-                            <h2 class="font-medium">{{ $t('public.show.highlights') }}</h2>
-                            <ul class="mt-2 list-inside list-disc text-gray-700">
-                                <li>{{ $t('public.show.highlight_factory') }}</li>
-                                <li>{{ $t('public.show.highlight_payment') }}</li>
-                                <li>{{ $t('public.show.highlight_stock', { count: product.stock_quantity }) }}</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h2 class="font-medium">{{ $t('public.show.composition') }}</h2>
-                            <p class="mt-2 text-gray-700">
-                                {{ $t('public.show.composition_text') }}
-                            </p>
-                        </div>
                     </div>
                 </aside>
             </div>
