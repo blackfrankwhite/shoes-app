@@ -269,7 +269,7 @@ class DatabaseSeeder extends Seeder
             'color_id' => $createdProducts->first()->colors()->first()->id,
             'name' => 'Nino Beridze',
             'phone' => '+995 599 12 34 56',
-            'email' => 'nino@example.com',
+            'address' => 'Tbilisi, Saburtalo district',
             'quantity' => 1,
             'comment' => 'Can I inspect this pair tomorrow afternoon?',
             'status' => 'new',

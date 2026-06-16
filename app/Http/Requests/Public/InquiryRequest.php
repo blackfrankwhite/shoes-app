@@ -18,7 +18,7 @@ class InquiryRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30', 'regex:/^\+?[0-9\s().-]{7,24}$/'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'address' => ['required', 'string', 'max:500'],
             'size_id' => ['required', 'integer', 'exists:sizes,id'],
             'color_id' => ['required', 'integer', 'exists:colors,id'],
             'quantity' => ['required', 'integer', 'min:1', 'max:50'],

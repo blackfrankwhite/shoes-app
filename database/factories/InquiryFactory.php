@@ -21,7 +21,7 @@ class InquiryFactory extends Factory
             'color_id' => Color::factory(),
             'name' => fake()->name(),
             'phone' => '+995 5'.fake()->numerify('## ## ## ##'),
-            'email' => fake()->safeEmail(),
+            'address' => fake()->address(),
             'quantity' => fake()->numberBetween(1, 3),
             'comment' => fake()->optional()->sentence(),
             'status' => fake()->randomElement(Inquiry::STATUSES),

@@ -53,7 +53,7 @@ class InquiryController extends Controller
         return Inertia::render('Admin/Inquiries/Show', [
             'inquiry' => [
                 ...$this->inquiryData($inquiry),
-                'email' => $inquiry->email,
+                'address' => $inquiry->address,
                 'quantity' => $inquiry->quantity,
                 'comment' => $inquiry->comment,
                 'product_detail' => ProductData::detail($inquiry->product),

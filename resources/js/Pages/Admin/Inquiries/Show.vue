@@ -50,8 +50,8 @@ const updateStatus = () => {
                             <dd class="mt-1 text-gray-600">{{ inquiry.phone }}</dd>
                         </div>
                         <div>
-                            <dt class="font-medium">{{ $t('common.email') }}</dt>
-                            <dd class="mt-1 text-gray-600">{{ inquiry.email || '-' }}</dd>
+                            <dt class="font-medium">{{ $t('common.address') }}</dt>
+                            <dd class="mt-1 text-gray-600">{{ inquiry.address || '-' }}</dd>
                         </div>
                         <div>
                             <dt class="font-medium">{{ $t('common.created') }}</dt>

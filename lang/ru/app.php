@@ -25,6 +25,7 @@ return [
     'common' => [
         'actions' => 'Действия',
         'active' => 'Активно',
+        'address' => 'Адрес',
         'inactive' => 'Неактивно',
         'all' => 'Все',
         'any_status' => 'Любой статус',

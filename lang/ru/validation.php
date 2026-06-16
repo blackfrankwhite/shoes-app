@@ -29,6 +29,7 @@ return [
     'unique' => ':attribute уже используется.',
     'uploaded' => ':attribute не удалось загрузить.',
     'attributes' => [
+        'address' => 'адрес',
         'category_id' => 'категория',
         'color_id' => 'цвет',
         'colors' => 'цвета',

@@ -30,7 +30,7 @@ class InquiryCreationTest extends TestCase
         $response = $this->post(route('inquiries.store', ['locale' => 'ka', 'product' => $product]), [
             'name' => 'Nino Beridze',
             'phone' => '+995 599 12 34 56',
-            'email' => 'nino@example.com',
+            'address' => 'Tbilisi, Saburtalo district',
             'size_id' => $size->id,
             'color_id' => $color->id,
             'quantity' => 2,
@@ -47,6 +47,7 @@ class InquiryCreationTest extends TestCase
             'color_id' => $color->id,
             'name' => 'Nino Beridze',
             'phone' => '+995 599 12 34 56',
+            'address' => 'Tbilisi, Saburtalo district',
             'quantity' => 2,
             'status' => 'new',
         ]);
@@ -70,6 +71,7 @@ class InquiryCreationTest extends TestCase
             ->post(route('inquiries.store', ['locale' => 'ka', 'product' => $product]), [
                 'name' => 'Nino Beridze',
                 'phone' => '+995 599 12 34 56',
+                'address' => 'Tbilisi, Vake district',
                 'size_id' => $unavailableSize->id,
                 'color_id' => $color->id,
                 'quantity' => 1,

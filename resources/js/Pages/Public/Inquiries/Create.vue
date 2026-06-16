@@ -17,7 +17,7 @@ const locale = computed(() => page.props.i18n?.locale || 'ka');
 const form = useForm({
     name: '',
     phone: '',
-    email: '',
+    address: '',
     size_id: Number(params.get('size_id')) || props.product.sizes[0]?.id || '',
     color_id: Number(params.get('color_id')) || props.product.colors[0]?.id || '',
     quantity: 1,
@@ -81,9 +81,9 @@ const submit = () => {
                     </div>
 
                     <div>
-                        <label class="text-sm font-medium">{{ $t('common.email_optional') }}</label>
-                        <input v-model="form.email" type="email" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
-                        <p v-if="form.errors.email" class="mt-1 text-sm text-red-600">{{ form.errors.email }}</p>
+                        <label class="text-sm font-medium">{{ $t('common.address') }}</label>
+                        <textarea v-model="form.address" rows="3" class="mt-2 w-full border-gray-300 text-sm focus:border-black focus:ring-black" />
+                        <p v-if="form.errors.address" class="mt-1 text-sm text-red-600">{{ form.errors.address }}</p>
                     </div>
 
                     <div class="grid gap-4 sm:grid-cols-3">

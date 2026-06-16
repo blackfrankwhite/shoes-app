@@ -20,7 +20,7 @@ class Inquiry extends Model
         'color_id',
         'name',
         'phone',
-        'email',
+        'address',
         'quantity',
         'comment',
         'status',

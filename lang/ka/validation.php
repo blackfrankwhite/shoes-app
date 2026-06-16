@@ -29,6 +29,7 @@ return [
     'unique' => ':attribute უკვე გამოყენებულია.',
     'uploaded' => ':attribute ვერ აიტვირთა.',
     'attributes' => [
+        'address' => 'მისამართი',
         'category_id' => 'კატეგორია',
         'color_id' => 'ფერი',
         'colors' => 'ფერები',

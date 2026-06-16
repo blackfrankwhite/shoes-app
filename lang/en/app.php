@@ -25,6 +25,7 @@ return [
     'common' => [
         'actions' => 'Actions',
         'active' => 'Active',
+        'address' => 'Address',
         'inactive' => 'Inactive',
         'all' => 'All',
         'any_status' => 'Any status',
