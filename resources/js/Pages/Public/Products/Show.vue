@@ -179,9 +179,6 @@ const reserveUrl = computed(() => {
                     >
                         {{ $t('public.show.reserve') }}
                     </Link>
-                    <p class="mt-3 text-xs leading-5 text-gray-500">
-                        {{ $t('public.show.no_payment') }}
-                    </p>
 
                     <div class="mt-8 space-y-6 border-t border-gray-200 pt-6 text-sm leading-6">
                         <div>
