@@ -21,6 +21,10 @@ createInertiaApp({
 
         router.on('success', (event) => {
             pageProps = event.detail.page.props;
+
+            if (typeof window.fbq === 'function') {
+                window.fbq('track', 'PageView');
+            }
         });
 
         vueApp.config.globalProperties.$t = (key, replacements = {}) => {
