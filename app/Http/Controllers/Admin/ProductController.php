@@ -159,6 +159,8 @@ class ProductController extends Controller
             'slug',
             'sex',
             'price',
+            'sale_percent',
+            'sale_enabled',
             'description',
             'description_translations',
             'sku',

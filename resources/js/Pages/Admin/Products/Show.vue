@@ -1,4 +1,5 @@
 <script setup>
+import ProductPrice from '@/Components/Public/ProductPrice.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 
@@ -43,7 +44,7 @@ defineProps({
                     </div>
                     <div>
                         <dt class="font-medium">{{ $t('common.price') }}</dt>
-                        <dd class="mt-1 text-gray-600">{{ product.formatted_price }}</dd>
+                        <dd class="mt-1 text-gray-600"><ProductPrice :product="product" /></dd>
                     </div>
                     <div>
                         <dt class="font-medium">{{ $t('common.stock') }}</dt>

@@ -21,6 +21,7 @@ class ProductRequest extends FormRequest
         $this->merge([
             'slug' => Str::slug($this->input('slug') ?: $this->input('name')),
             'featured' => $this->boolean('featured'),
+            'sale_enabled' => $this->boolean('sale_enabled'),
             'is_active' => $this->has('is_active') ? $this->boolean('is_active') : true,
             'stock_quantity' => (int) $this->input('stock_quantity', 0),
         ]);
@@ -44,6 +45,8 @@ class ProductRequest extends FormRequest
             ],
             'sex' => ['required', Rule::in(Product::SEXES)],
             'price' => ['required', 'numeric', 'min:0', 'max:999999.99'],
+            'sale_percent' => ['nullable', 'required_if:sale_enabled,true', 'integer', 'min:1', 'max:100'],
+            'sale_enabled' => ['boolean'],
             'description' => ['nullable', 'string'],
             'description_translations' => ['array'],
             'description_translations.en' => ['nullable', 'string'],

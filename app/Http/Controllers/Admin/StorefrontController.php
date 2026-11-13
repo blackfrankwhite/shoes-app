@@ -23,6 +23,7 @@ class StorefrontController extends Controller
         $coverPath = SiteSetting::value(self::HOME_COVER_KEY);
 
         return Inertia::render('Admin/Storefront/Edit', [
+            'sale' => app(\App\Support\StoreSale::class)->settings(),
             'homeCover' => [
                 'path' => $coverPath,
                 'url' => $coverPath ? ProductData::imageUrl($coverPath) : null,
@@ -37,7 +38,16 @@ class StorefrontController extends Controller
         $validated = $request->validate([
             'home_cover' => ['nullable', 'image', 'max:4096'],
             'remove_home_cover' => ['boolean'],
+            'sale_enabled' => ['sometimes', 'boolean'],
+            'sale_percent' => ['nullable', 'required_if:sale_enabled,1,true', 'integer', 'min:1', 'max:100'],
         ]);
+
+        if (array_key_exists('sale_enabled', $validated)) {
+            SiteSetting::set('store_sale', json_encode([
+                'enabled' => $request->boolean('sale_enabled'),
+                'percent' => (int) ($validated['sale_percent'] ?? 0),
+            ]));
+        }
 
         $coverPath = SiteSetting::value(self::HOME_COVER_KEY);
 

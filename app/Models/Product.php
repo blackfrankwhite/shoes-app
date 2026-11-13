@@ -25,6 +25,8 @@ class Product extends Model
         'slug',
         'sex',
         'price',
+        'sale_percent',
+        'sale_enabled',
         'description',
         'description_translations',
         'sku',
@@ -37,12 +39,44 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'sale_percent' => 'integer',
+            'sale_enabled' => 'boolean',
             'stock_quantity' => 'integer',
             'featured' => 'boolean',
             'is_active' => 'boolean',
             'name_translations' => 'array',
             'description_translations' => 'array',
         ];
+    }
+
+    public function discountPercent(): int
+    {
+        return app(\App\Support\StoreSale::class)->percent()
+            ?: ($this->sale_enabled ? (int) $this->sale_percent : 0);
+    }
+
+    public function scopePriceBetween(Builder $query, ?float $min, ?float $max): Builder
+    {
+        $percent = app(\App\Support\StoreSale::class)->percent();
+        $expression = $percent
+            ? "ROUND(price * (100 - {$percent}) / 100, 2)"
+            : '(CASE WHEN sale_enabled = 1 AND sale_percent BETWEEN 1 AND 100 THEN ROUND(price * (100 - sale_percent) / 100, 2) ELSE price END)';
+
+        return $query
+            ->when($min !== null, fn ($query) => $query->whereRaw("{$expression} >= CAST(? AS DECIMAL(10, 2))", [$min]))
+            ->when($max !== null, fn ($query) => $query->whereRaw("{$expression} <= CAST(? AS DECIMAL(10, 2))", [$max]));
+    }
+
+    public function isOnSale(): bool
+    {
+        return $this->discountPercent() > 0 && $this->discountPercent() <= 100 && $this->price > 0;
+    }
+
+    public function currentPrice(): float
+    {
+        return $this->isOnSale()
+            ? round((float) $this->price * (100 - $this->discountPercent()) / 100, 2)
+            : (float) $this->price;
     }
 
     public function getRouteKeyName(): string

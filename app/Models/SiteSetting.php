@@ -18,6 +18,8 @@ class SiteSetting extends Model
 
     public static function set(string $key, ?string $value): void
     {
+        request()->attributes->remove('store_sale');
+
         static::query()->updateOrCreate(
             ['key' => $key],
             ['value' => $value],

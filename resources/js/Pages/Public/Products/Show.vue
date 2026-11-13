@@ -1,4 +1,5 @@
 <script setup>
+import ProductPrice from '@/Components/Public/ProductPrice.vue';
 import ProductCard from '@/Components/Public/ProductCard.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
@@ -133,7 +134,7 @@ const reserveUrl = computed(() => {
                 <aside class="self-start lg:sticky lg:top-24">
                     <p class="text-xs uppercase tracking-[0.18em] text-gray-500">{{ product.category?.name }} · {{ $t(`sexes.${product.sex}`) }}</p>
                     <h1 class="mt-3 break-words text-2xl font-semibold sm:text-3xl">{{ product.name }}</h1>
-                    <p class="mt-3 text-lg text-gray-900">{{ product.formatted_price }}</p>
+                    <p class="mt-3 text-lg text-gray-900"><ProductPrice :product="product" /></p>
                     <p v-if="selectedColorSku" class="mt-2 text-sm text-gray-500">{{ $t('public.show.factory_code', { sku: selectedColorSku }) }}</p>
 
                     <div class="mt-8 border-t border-gray-200 pt-6">

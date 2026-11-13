@@ -1,4 +1,5 @@
 <script setup>
+import ProductPrice from '@/Components/Public/ProductPrice.vue';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
@@ -53,7 +54,7 @@ const submit = () => {
                     <div>
                         <h1 class="break-words text-xl font-semibold lg:mt-4 lg:text-2xl">{{ product.name }}</h1>
                         <p class="mt-2 text-sm text-gray-600">
-                            {{ product.formatted_price }}<span v-if="selectedColorSku"> · {{ selectedColorSku }}</span>
+                            <ProductPrice :product="product" /><span v-if="selectedColorSku"> · {{ selectedColorSku }}</span>
                         </p>
                     </div>
                 </aside>

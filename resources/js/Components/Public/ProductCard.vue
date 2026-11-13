@@ -1,4 +1,5 @@
 <script setup>
+import ProductPrice from '@/Components/Public/ProductPrice.vue';
 import { Link } from '@inertiajs/vue3';
 
 defineProps({
@@ -27,7 +28,7 @@ defineProps({
                 <h3 class="break-words text-sm font-medium leading-5 text-gray-950 sm:text-base">
                     {{ product.name }}
                 </h3>
-                <p class="text-sm text-gray-700">{{ product.formatted_price }}</p>
+                <p class="text-sm text-gray-700"><ProductPrice :product="product" /></p>
             </div>
         </Link>
     </article>

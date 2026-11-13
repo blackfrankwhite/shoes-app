@@ -3,6 +3,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
+    sale: { type: Object, required: true },
     homeCover: {
         type: Object,
         required: true,
@@ -10,6 +11,8 @@ const props = defineProps({
 });
 
 const form = useForm({
+    sale_enabled: props.sale.enabled,
+    sale_percent: props.sale.percent || '',
     home_cover: null,
     remove_home_cover: false,
 });
@@ -37,6 +40,18 @@ const submit = () => {
         </div>
 
         <form class="mt-6 max-w-3xl space-y-6 border border-gray-200 bg-white p-4 sm:mt-8 sm:p-5" @submit.prevent="submit">
+            <section class="rounded-lg border border-rose-200 bg-rose-50/40 p-4">
+                <h2 class="text-lg font-semibold">{{ $t('common.store_sale') }}</h2>
+                <p class="mt-1 text-sm text-gray-600">{{ $t('common.store_sale_help') }}</p>
+                <label for="store-sale-percent" class="mt-4 block text-sm font-medium">{{ $t('common.sale_percent') }}</label>
+                <input id="store-sale-percent" v-model="form.sale_percent" type="number" min="1" max="100" step="1" class="mt-2 w-40 border-gray-300 text-sm focus:border-black focus:ring-black" />
+                <p v-if="form.errors.sale_percent" class="mt-1 text-sm text-red-600">{{ form.errors.sale_percent }}</p>
+                <label class="mt-4 flex items-center gap-2 text-sm font-medium">
+                    <input v-model="form.sale_enabled" type="checkbox" class="border-gray-300 text-rose-700 focus:ring-rose-700" />
+                    {{ $t('common.sale_enabled') }}
+                </label>
+                <p v-if="form.errors.sale_enabled" class="mt-1 text-sm text-red-600">{{ form.errors.sale_enabled }}</p>
+            </section>
             <section>
                 <h2 class="text-lg font-semibold">{{ $t('admin.storefront.home_cover') }}</h2>
                 <p class="mt-1 text-sm text-gray-600">{{ $t('admin.storefront.home_cover_help') }}</p>

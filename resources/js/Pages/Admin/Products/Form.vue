@@ -30,7 +30,9 @@ const form = useForm({
     },
     slug: props.product?.slug || '',
     sex: props.product?.sex || props.options.sexes[0],
-    price: props.product?.price || '',
+    price: props.product?.price ?? '',
+    sale_percent: props.product?.sale_percent ?? '',
+    sale_enabled: props.product?.sale_enabled ?? false,
     description: props.product?.base_description || props.product?.description || '',
     description_translations: {
         en: props.product?.description_translations?.en || '',
@@ -48,6 +50,14 @@ const form = useForm({
     image_color_ids: imageColorIds,
     new_image_color_ids: [],
     main_image_id: mainImage?.id || '',
+});
+
+const salePreview = computed(() => {
+    const price = Number(form.price);
+    const percent = Number(form.sale_percent);
+    return price > 0 && percent >= 1 && percent <= 100
+        ? `GEL ${(Math.round(price * (100 - percent)) / 100).toFixed(2)}`
+        : null;
 });
 
 const selectedColorOptions = computed(() => {
@@ -144,6 +154,24 @@ const setFiles = (event) => {
                         {{ $t('common.active') }}
                     </label>
                 </div>
+            </section>
+
+            <section class="border border-rose-200 bg-rose-50/40 p-4 sm:p-5">
+                <h2 class="text-lg font-semibold">{{ $t('common.sale') }}</h2>
+                <p class="mt-1 text-sm text-gray-600">{{ $t('common.sale_help') }}</p>
+                <div class="mt-4 flex flex-wrap items-end gap-5">
+                    <div>
+                        <label for="sale-percent" class="text-sm font-medium">{{ $t('common.sale_percent') }}</label>
+                        <input id="sale-percent" v-model="form.sale_percent" type="number" min="1" max="100" step="1" class="mt-2 block w-40 border-gray-300 text-sm focus:border-black focus:ring-black" />
+                        <p v-if="form.errors.sale_percent" class="mt-1 text-sm text-red-600">{{ form.errors.sale_percent }}</p>
+                    </div>
+                    <label class="flex items-center gap-2 py-2 text-sm font-medium">
+                        <input v-model="form.sale_enabled" type="checkbox" class="border-gray-300 text-rose-700 focus:ring-rose-700" />
+                        {{ $t('common.sale_enabled') }}
+                    </label>
+                    <p v-if="salePreview" class="py-2 text-sm">{{ $t('common.sale_price') }}: <strong class="text-rose-700">{{ salePreview }}</strong></p>
+                </div>
+                <p v-if="form.errors.sale_enabled" class="mt-1 text-sm text-red-600">{{ form.errors.sale_enabled }}</p>
             </section>
 
             <section class="grid gap-5 border border-gray-200 bg-white p-4 sm:p-5 lg:grid-cols-2">

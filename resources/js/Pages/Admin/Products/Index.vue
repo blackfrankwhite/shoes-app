@@ -1,4 +1,5 @@
 <script setup>
+import ProductPrice from '@/Components/Public/ProductPrice.vue';
 import Pagination from '@/Components/Pagination.vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { useTranslations } from '@/composables/useTranslations';
@@ -78,7 +79,7 @@ const destroyProduct = (product) => {
                     <div class="min-w-0 flex-1">
                         <p class="break-words font-medium">{{ product.name }}</p>
                         <p v-if="product.sku" class="mt-1 text-xs text-gray-500">{{ product.sku }}</p>
-                        <p class="mt-2 text-sm text-gray-700">{{ product.formatted_price }}</p>
+                        <p class="mt-2 text-sm text-gray-700"><ProductPrice :product="product" /></p>
                         <p class="mt-1 text-xs text-gray-500">{{ product.category?.name }} · {{ product.stock_quantity }} {{ $t('common.stock') }}</p>
                     </div>
                 </div>
@@ -119,7 +120,7 @@ const destroyProduct = (product) => {
                             </div>
                         </td>
                         <td class="px-4 py-4 text-gray-600">{{ product.category?.name }}</td>
-                        <td class="px-4 py-4">{{ product.formatted_price }}</td>
+                        <td class="px-4 py-4"><ProductPrice :product="product" /></td>
                         <td class="px-4 py-4">{{ product.stock_quantity }}</td>
                         <td class="px-4 py-4">{{ product.is_active ? $t('common.active') : $t('common.inactive') }}</td>
                         <td class="px-4 py-4 text-right">
